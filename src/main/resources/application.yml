@@ -4,17 +4,22 @@ spring:
     username: ${DB_USER}
     password: ${PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-  jpa:
-    hibernate:
-      ddl-auto: create
-    database-platform: org.hibernate.dialect.MySQLDialect
-
   data:
     redis:
       host: ${HOST}
       port: ${PORT}
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/schema.sql
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expiration: 3600000
   refresh-token-expiration: 4380000000
+
+mybatis:
+  type-aliases-package: com.example.let_server.domain
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:mapper/**/*.xml

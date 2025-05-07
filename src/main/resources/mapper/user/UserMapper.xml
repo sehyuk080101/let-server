@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.let_server.domain.user.mapper.UserMapper">
+    <insert id="save" useGeneratedKeys = "true" keyProperty="id">
+        insert into user(id, username, password, student_id, real_name, school_id, role)
+        values (#{id}, #{username}, #{password}, #{studentId}, #{realName}, #{schoolId}, #{role})
+    </insert>
+
+    <select id="findByUsername" resultType="User">
+        select id, username, password, student_id, real_name, school_id, role
+        from user
+        where username = #{username}
+    </select>
+
+    <select id="existsByUsername" resultType="boolean">
+        select count(*) > 0
+        from user
+        where username = #{username}
+    </select>
+</mapper>

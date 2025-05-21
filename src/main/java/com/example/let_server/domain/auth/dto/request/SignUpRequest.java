@@ -15,8 +15,6 @@ public record SignUpRequest(
         @NotBlank
         Long studentId,
         @NotBlank
-        String realName,
-        @NotBlank
-        Long schoolId
+        String realName
 ) {
 }

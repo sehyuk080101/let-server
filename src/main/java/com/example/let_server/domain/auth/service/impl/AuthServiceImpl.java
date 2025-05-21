@@ -42,7 +42,6 @@ public class AuthServiceImpl implements AuthService {
                 .role(UserRole.ROLE_USER)
                 .realName(request.realName())
                 .studentId(request.studentId())
-                .schoolId(request.schoolId())
                 .build();
 
         userRepository.save(user);

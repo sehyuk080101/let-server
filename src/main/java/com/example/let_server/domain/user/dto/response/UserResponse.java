@@ -6,20 +6,18 @@ import lombok.Builder;
 
 @Builder
 public record UserResponse(
-        Long idx,
+        Long userId,
         String username,
         Long studentId,
         String realName,
-        Long schoolId,
         UserRole role
 ) {
     public static UserResponse of (User user) {
         return UserResponse.builder()
-                .idx(user.getId())
+                .userId(user.getUserId())
                 .username(user.getUsername())
                 .studentId(user.getStudentId())
                 .realName(user.getRealName())
-                .schoolId(user.getSchoolId())
                 .role(user.getRole())
                 .build();
     }

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.let_server.domain.mealMenu.mapper.MealMenuMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="mealMenuId">
+        insert into MealMenu(meal_menu_id,menu_id,meal_id)
+        values (#{mealMenuId},#{menu.menuId},#{meal.mealId})
+    </insert>
+</mapper>

@@ -1,5 +1,6 @@
 package com.example.let_server.domain.mealMenu.controller;
 
+import com.example.let_server.domain.meal.dto.response.MealResponse;
 import com.example.let_server.domain.mealMenu.dto.response.MealMenuResponse;
 import com.example.let_server.domain.mealMenu.service.MealMenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,7 +24,7 @@ public class MealMenuController {
     @Operation(
             summary = "현재 달의 급식 조회"
     )
-    public ResponseEntity<List<MealMenuResponse>> getMonthlyMenu(){
+    public ResponseEntity<List<MealResponse>> getMonthlyMenu(){
         return ResponseEntity.ok(mealMenuService.getMonthlyMenu()) ;
     }
 }

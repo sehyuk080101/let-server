@@ -1,6 +1,7 @@
 package com.example.let_server.domain.mealMenu.service.impl;
 
 import com.example.let_server.domain.meal.domain.Meal;
+import com.example.let_server.domain.meal.dto.response.MealResponse;
 import com.example.let_server.domain.meal.service.MealService;
 import com.example.let_server.domain.mealMenu.domain.MealMenu;
 import com.example.let_server.domain.mealMenu.dto.response.MealMenuResponse;
@@ -8,6 +9,7 @@ import com.example.let_server.domain.mealMenu.mapper.MealMenuMapper;
 import com.example.let_server.domain.mealMenu.repository.MealMenuRepository;
 import com.example.let_server.domain.mealMenu.service.MealMenuService;
 import com.example.let_server.domain.menu.domain.Menu;
+import com.example.let_server.domain.menu.dto.MenuResponse;
 import com.example.let_server.domain.menu.service.MenuService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -22,9 +24,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,10 +39,10 @@ public class MealMenuServiceImpl implements MealMenuService {
     private String KEY;
     private final MenuService menuService;
 
-    @PostConstruct
-    public void init() {
-        fetchAndSaveMonthlyMeals();
-    }
+//    @PostConstruct
+//    public void init() {
+//        fetchAndSaveMonthlyMeals();
+//    }
 
     @Scheduled(cron = "0 0 0 1 * ?")
     @Override
@@ -69,9 +69,25 @@ public class MealMenuServiceImpl implements MealMenuService {
     }
 
     @Override
-    public List<MealMenuResponse> getMonthlyMenu() {
+    public List<MealResponse> getMonthlyMenu() {
         String yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        return mealMenuMapper.findMonthlyMealMenu(yearMonth).stream().map(MealMenuResponse::of).toList();
+        List<MealMenu> mealMenus = mealMenuMapper.findMonthlyMealMenu(yearMonth);
+
+        Map<Integer, MealResponse> mealMap = new LinkedHashMap<>();
+
+        for (MealMenu mm : mealMenus) {
+            Meal meal = mm.getMeal();
+            Menu menu = mm.getMenu();
+
+            MealResponse mealResponse = mealMap.get(meal.getMealId());
+            if (mealResponse == null) {
+                mealResponse = MealResponse.of(meal);
+                mealMap.put(meal.getMealId(), mealResponse);
+            }
+
+            mealResponse.getMenus().add(MenuResponse.of(menu));
+        }
+        return new ArrayList<>(mealMap.values());
     }
 
     private void parseAndSave(String json, int mealType) throws JsonProcessingException {

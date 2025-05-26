@@ -4,8 +4,6 @@ import com.example.let_server.domain.meal.domain.Meal;
 import com.example.let_server.domain.meal.dto.response.MealResponse;
 import com.example.let_server.domain.meal.service.MealService;
 import com.example.let_server.domain.mealMenu.domain.MealMenu;
-import com.example.let_server.domain.mealMenu.dto.response.MealMenuResponse;
-import com.example.let_server.domain.mealMenu.mapper.MealMenuMapper;
 import com.example.let_server.domain.mealMenu.repository.MealMenuRepository;
 import com.example.let_server.domain.mealMenu.service.MealMenuService;
 import com.example.let_server.domain.menu.domain.Menu;
@@ -32,7 +30,6 @@ public class MealMenuServiceImpl implements MealMenuService {
     private final MealMenuRepository mealMenuRepository;
     private final RestTemplate restTemplate;
     private final MealService mealService;
-    private final MealMenuMapper mealMenuMapper;
 
 
     @Value("${KEY}")
@@ -71,7 +68,7 @@ public class MealMenuServiceImpl implements MealMenuService {
     @Override
     public List<MealResponse> getMonthlyMenu() {
         String yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        List<MealMenu> mealMenus = mealMenuMapper.findMonthlyMealMenu(yearMonth);
+        List<MealMenu> mealMenus = mealMenuRepository.findMonthlyMealMenu(yearMonth);
 
         Map<Integer, MealResponse> mealMap = new LinkedHashMap<>();
 

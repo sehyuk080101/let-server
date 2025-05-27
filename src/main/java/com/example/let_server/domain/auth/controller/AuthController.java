@@ -27,26 +27,26 @@ public class AuthController {
     @Operation(
             summary = "회원 가입"
     )
-    public ResponseEntity<BaseResponse<Void>> signup(@RequestBody SignUpRequest request){
+    public ResponseEntity<BaseResponse<Void>> signup(@RequestBody SignUpRequest request) {
         authService.signup(request);
 
-        return BaseResponse.of(null,201);
+        return BaseResponse.of(null, 201);
     }
 
     @PostMapping("/login")
     @Operation(
             summary = "로그인"
     )
-    public ResponseEntity<BaseResponse<Jwt>> login(@RequestBody LoginRequest request){
+    public ResponseEntity<BaseResponse<Jwt>> login(@RequestBody LoginRequest request) {
 
-        return BaseResponse.of(authService.login(request),201);
+        return BaseResponse.of(authService.login(request), 201);
     }
 
     @PostMapping("/reissue")
     @Operation(
             summary = "토큰 재발급"
     )
-    public ResponseEntity<BaseResponse<Jwt>> reissue(@RequestBody ReissueRequest request){
-        return BaseResponse.of(authService.reissue(request),201);
+    public ResponseEntity<BaseResponse<Jwt>> reissue(@RequestBody ReissueRequest request) {
+        return BaseResponse.of(authService.reissue(request), 201);
     }
 }

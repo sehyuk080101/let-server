@@ -13,12 +13,13 @@ import com.example.let_server.domain.menuAllergy.service.MenuAllergyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
@@ -26,132 +27,209 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MealMenuServiceImpl implements MealMenuService {
+
+    // Constants
+    private static final String API_URL_TEMPLATE =
+            "https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE=D10&SD_SCHUL_CODE=7240454&KEY=%s&MLSV_FROM_YMD=%s&MLSV_TO_YMD=%s&Type=json&MMEAL_SC_CODE=%d&pSize=100";
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM");
+    private static final Pattern ALLERGY_PATTERN = Pattern.compile("\\((\\d+(?:\\.\\d+)*)\\)");
+    private static final int MAX_ALLERGY_ID = 19;
+
+    // Meal type mappings
+    private static final Map<Integer, String> MEAL_TYPE_MAP = Map.of(
+            1, "조식",
+            2, "중식",
+            3, "석식"
+    );
+
     private final MealMenuRepository mealMenuRepository;
     private final RestTemplate restTemplate;
     private final MealService mealService;
     private final MenuAllergyService menuAllergyService;
-
+    private final MenuService menuService;
+    private final ObjectMapper objectMapper;
 
     @Value("${KEY}")
-    private String KEY;
-    private final MenuService menuService;
-
-//    @PostConstruct
-//    public void init() {
-//        fetchAndSaveMonthlyMeals();
-//    }
+    private String apiKey;
 
     @Scheduled(cron = "0 0 0 1 * ?")
+    @Transactional
     public void fetchAndSaveMonthlyMeals() {
+        log.info("월간 급식 데이터 수집 시작");
+
         LocalDate now = LocalDate.now();
-        String from = now.withDayOfMonth(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        String to = now.withDayOfMonth(now.lengthOfMonth()).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        DateRange dateRange = createDateRange(now);
 
-
-        for (int mealType = 1; mealType <= 3; mealType++) {
-            String url = String.format(
-                    "https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE=D10&SD_SCHUL_CODE=7240454&KEY=%s&MLSV_FROM_YMD=%s&MLSV_TO_YMD=%s&Type=json&MMEAL_SC_CODE=%d&pSize=100",KEY,from,to,mealType
-            );
-
+        MEAL_TYPE_MAP.keySet().forEach(mealType -> {
             try {
-                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-                if (response.getStatusCode().is2xxSuccessful()) {
-                    parseAndSave(response.getBody(),mealType);
-                }
-            }catch (Exception e){
-                e.printStackTrace();
+                fetchAndSaveMealData(dateRange, mealType);
+            } catch (Exception e) {
+                log.error("급식 데이터 수집 중 오류 발생. MealType: {}", mealType, e);
             }
-        }
+        });
+
+        log.info("월간 급식 데이터 수집 완료");
     }
 
     @Override
-    public List<MealResponse> getMonthlyMenu(String period,Long allergyId) {
-        String yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        List<MealMenu> mealMenus = mealMenuRepository.findMonthlyMealMenu(yearMonth,period, allergyId);
+    public List<MealResponse> getMonthlyMenu(String period, Long allergyId) {
+        String yearMonth = LocalDate.now().format(YEAR_MONTH_FORMATTER);
+        List<MealMenu> mealMenus = mealMenuRepository.findMonthlyMealMenu(yearMonth, period, allergyId);
 
+        return groupMealMenusByMeal(mealMenus);
+    }
+
+    private DateRange createDateRange(LocalDate date) {
+        String fromDate = date.withDayOfMonth(1).format(DATE_FORMATTER);
+        String toDate = date.withDayOfMonth(date.lengthOfMonth()).format(DATE_FORMATTER);
+        return new DateRange(fromDate, toDate);
+    }
+
+    private void fetchAndSaveMealData(DateRange dateRange, int mealType) {
+        String url = buildApiUrl(dateRange, mealType);
+
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            parseAndSave(response.getBody(), mealType);
+        }
+    }
+
+    private String buildApiUrl(DateRange dateRange, int mealType) {
+        return String.format(API_URL_TEMPLATE, apiKey, dateRange.from(), dateRange.to(), mealType);
+    }
+
+    private List<MealResponse> groupMealMenusByMeal(List<MealMenu> mealMenus) {
         Map<Integer, MealResponse> mealMap = new LinkedHashMap<>();
 
-        for (MealMenu mm : mealMenus) {
-            Meal meal = mm.getMeal();
-            Menu menu = mm.getMenu();
+        for (MealMenu mealMenu : mealMenus) {
+            Meal meal = mealMenu.getMeal();
+            Menu menu = mealMenu.getMenu();
 
-            MealResponse mealResponse = mealMap.get(meal.getMealId());
-            if (mealResponse == null) {
-                mealResponse = MealResponse.of(meal);
-                mealMap.put(meal.getMealId(), mealResponse);
-            }
+            MealResponse mealResponse = mealMap.computeIfAbsent(
+                    meal.getMealId(),
+                    k -> MealResponse.of(meal)
+            );
 
             mealResponse.getMenus().add(MenuResponse.of(menu));
         }
+
         return new ArrayList<>(mealMap.values());
     }
 
-    private void parseAndSave(String json, int mealType) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree(json);
+    private void parseAndSave(String json, int mealType) {
+        try {
+            JsonNode root = objectMapper.readTree(json);
+            JsonNode rows = root.path("mealServiceDietInfo").path(1).path("row");
 
-        JsonNode rows = root.path("mealServiceDietInfo").path(1).path("row");
-        if (rows.isMissingNode()) return;
-
-        for (JsonNode row : rows) {
-            String dateStr = row.path("MLSV_YMD").asText();
-            String dishName = row.path("DDISH_NM").asText();
-            String calInfo = row.path("CAL_INFO").asText().replace("Kcal", "").trim();
-
-            List<String> menus = Arrays.stream(dishName.split("<br/>"))
-                    .filter(s -> !s.isEmpty())
-                    .toList();
-
-            Date date = java.sql.Date.valueOf(LocalDate.parse(dateStr,DateTimeFormatter.ofPattern("yyyyMMdd")));
-            float calories = Float.parseFloat(calInfo);
-
-            String type = switch (mealType){
-                case 1 -> "조식";
-                case 2 -> "중식";
-                case 3 -> "석식";
-                default -> "UNKNOWN";
-            };
-
-            Meal meal = mealService.createMeal(date,type,calories);
-
-            for (String rawMenu : menus) {
-                Matcher matcher = Pattern.compile("\\((\\d+(?:\\.\\d+)*)\\)").matcher(rawMenu);
-                List<Long> allergyIds = new ArrayList<>();
-                if (matcher.find()) {
-                    String[] allergyStrs = matcher.group(1).split("\\.");
-                    for (String s : allergyStrs) {
-                        try {
-                            Long allergyId = Long.parseLong(s);
-                            if (allergyId <= 19)
-                                allergyIds.add(allergyId);
-                        } catch (NumberFormatException ignored) {}
-                    }
-                }
-
-                // 괄호(알러지) 제거 → 메뉴 이름 추출
-                String menuName = rawMenu.replaceAll("\\(.*?\\)", "").trim();
-                if (menuName.isEmpty()) continue;
-
-                // 메뉴 저장
-                Menu menu = menuService.save(menuName);
-
-                // 알러지 매핑
-                for (Long allergyId : allergyIds) {
-                    menuAllergyService.save(menu.getMenuId(), allergyId);
-                }
-
-                // 급식-메뉴 매핑 저장
-                mealMenuRepository.save(MealMenu.builder()
-                        .meal(meal)
-                        .menu(menu)
-                        .build());
+            if (rows.isMissingNode()) {
+                log.warn("급식 데이터가 없습니다. MealType: {}", mealType);
+                return;
             }
 
+            for (JsonNode row : rows) {
+                processMealRow(row, mealType);
+            }
+        } catch (JsonProcessingException e) {
+            log.error("JSON 파싱 중 오류 발생", e);
+            throw new RuntimeException("급식 데이터 파싱 실패", e);
         }
     }
 
+    private void processMealRow(JsonNode row, int mealType) {
+        MealData mealData = extractMealData(row, mealType);
+        Meal meal = mealService.createMeal(mealData.date(), mealData.type(), mealData.calories());
+
+        mealData.menus().forEach(menuName -> processMenu(meal, menuName));
+    }
+
+    private MealData extractMealData(JsonNode row, int mealType) {
+        String dateStr = row.path("MLSV_YMD").asText();
+        String dishName = row.path("DDISH_NM").asText();
+        String calInfo = row.path("CAL_INFO").asText().replace("Kcal", "").trim();
+
+        List<String> menus = Arrays.stream(dishName.split("<br/>"))
+                .filter(menu -> !menu.trim().isEmpty())
+                .collect(Collectors.toList());
+
+        Date date = java.sql.Date.valueOf(LocalDate.parse(dateStr, DATE_FORMATTER));
+        float calories = parseCalories(calInfo);
+        String type = MEAL_TYPE_MAP.getOrDefault(mealType, "UNKNOWN");
+
+        return new MealData(date, type, calories, menus);
+    }
+
+    private float parseCalories(String calInfo) {
+        try {
+            return Float.parseFloat(calInfo);
+        } catch (NumberFormatException e) {
+            log.warn("칼로리 정보 파싱 실패: {}", calInfo);
+            return 0.0f;
+        }
+    }
+
+    private void processMenu(Meal meal, String rawMenu) {
+        List<Long> allergyIds = extractAllergyIds(rawMenu);
+        String menuName = cleanMenuName(rawMenu);
+
+        if (menuName.isEmpty()) {
+            return;
+        }
+
+        Menu menu = menuService.save(menuName);
+        saveAllergyMappings(menu.getMenuId(), allergyIds);
+        saveMealMenuMapping(meal, menu);
+    }
+
+    private List<Long> extractAllergyIds(String rawMenu) {
+        Matcher matcher = ALLERGY_PATTERN.matcher(rawMenu);
+        if (!matcher.find()) {
+            return Collections.emptyList();
+        }
+
+        return Arrays.stream(matcher.group(1).split("\\."))
+                .map(this::parseAllergyId)
+                .filter(Objects::nonNull)
+                .filter(id -> id <= MAX_ALLERGY_ID)
+                .collect(Collectors.toList());
+    }
+
+    private Long parseAllergyId(String allergyStr) {
+        try {
+            return Long.parseLong(allergyStr);
+        } catch (NumberFormatException e) {
+            log.warn("알러지 ID 파싱 실패: {}", allergyStr);
+            return null;
+        }
+    }
+
+    private String cleanMenuName(String rawMenu) {
+        return rawMenu.replaceAll("\\(.*?\\)", "").trim();
+    }
+
+    private void saveAllergyMappings(Long menuId, List<Long> allergyIds) {
+        allergyIds.forEach(allergyId -> menuAllergyService.save(menuId, allergyId));
+    }
+
+    private void saveMealMenuMapping(Meal meal, Menu menu) {
+        MealMenu mealMenu = MealMenu.builder()
+                .meal(meal)
+                .menu(menu)
+                .build();
+        mealMenuRepository.save(mealMenu);
+    }
+
+    // Record classes for better data modeling
+    private record DateRange(String from, String to) {
+    }
+
+    private record MealData(Date date, String type, float calories, List<String> menus) {
+    }
 }

@@ -12,8 +12,6 @@ import com.example.let_server.global.security.jwt.enums.JwtType;
 import com.example.let_server.global.security.jwt.error.JwtError;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
-import java.util.Date;
-
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +23,7 @@ import org.springframework.util.StringUtils;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
@@ -50,7 +49,7 @@ public class JwtProvider {
                 .and()
                 .subject(username)
                 .issuedAt(now)
-                .expiration(new Date(now.getTime()+jwtPropoties.getAccessTokenExpiration()))
+                .expiration(new Date(now.getTime() + jwtPropoties.getAccessTokenExpiration()))
                 .signWith(key)
                 .compact();
 
@@ -60,7 +59,7 @@ public class JwtProvider {
                 .and()
                 .subject(username)
                 .issuedAt(now)
-                .expiration(new Date((now.getTime()+ jwtPropoties.getRefreshTokenExpiration())))
+                .expiration(new Date((now.getTime() + jwtPropoties.getRefreshTokenExpiration())))
                 .signWith(key)
                 .compact();
 
@@ -72,12 +71,12 @@ public class JwtProvider {
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
 
-        if(getType(token) != JwtType.ACCESS){
+        if (getType(token) != JwtType.ACCESS) {
             throw new CustomException(JwtError.INVALID_TOKEN_TYPE);
         }
 
         User user = userRepository.findByUsername(claims.getSubject())
-                .orElseThrow(()->new CustomException(UserError.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(UserError.USER_NOT_FOUND));
 
         UserDetails details = new CustomUserDetails(user);
 
@@ -106,7 +105,7 @@ public class JwtProvider {
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-        }catch (ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) {
             throw new CustomException(JwtError.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
             throw new CustomException(JwtError.UNSUPPORTED_TOKEN);

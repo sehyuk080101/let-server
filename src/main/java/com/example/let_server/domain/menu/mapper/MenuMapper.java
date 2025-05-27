@@ -8,5 +8,6 @@ import java.util.Optional;
 @Mapper
 public interface MenuMapper {
     void save(Menu menu);
+
     Optional<Menu> findByMenuId(Long menuId);
 }

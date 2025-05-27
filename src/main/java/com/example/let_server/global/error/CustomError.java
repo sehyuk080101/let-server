@@ -1,4 +1,5 @@
 package com.example.let_server.global.error;
+
 public interface CustomError {
     String getMessage();
 

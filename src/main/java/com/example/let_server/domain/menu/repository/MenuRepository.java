@@ -6,5 +6,6 @@ import java.util.Optional;
 
 public interface MenuRepository {
     Menu save(Menu menu);
+
     Optional<Menu> findByMenuId(Long menuId);
 }

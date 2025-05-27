@@ -18,7 +18,7 @@ public class MybatisMealMenuRepository implements MealMenuRepository {
     }
 
     @Override
-    public List<MealMenu> findMonthlyMealMenu(String yearMonth) {
-        return mealMenuMapper.findMonthlyMealMenu(yearMonth);
+    public List<MealMenu> findMonthlyMealMenu(String yearMonth, String period, Long allergyId) {
+        return mealMenuMapper.findMonthlyMealMenu(yearMonth, period, allergyId);
     }
 }

@@ -1,6 +1,5 @@
 package com.example.let_server.domain.menu.domain;
 
-import com.example.let_server.domain.user.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

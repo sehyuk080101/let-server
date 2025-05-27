@@ -8,6 +8,8 @@ import java.util.Optional;
 @Mapper
 public interface UserMapper {
     void save(User user);
+
     Optional<User> findByUsername(String username);
+
     boolean existsByUsername(String username);
 }

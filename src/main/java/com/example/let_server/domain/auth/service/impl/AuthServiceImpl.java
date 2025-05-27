@@ -32,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void signup(SignUpRequest request) {
-        if (userRepository.existsByUsername(request.username())){
+        if (userRepository.existsByUsername(request.username())) {
             throw new CustomException(UserError.USERNAME_DUPLICATION);
         }
 
@@ -48,15 +48,15 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @Transactional(readOnly = true )
+    @Transactional(readOnly = true)
     public Jwt login(LoginRequest request) {
         String username = request.username();
         String password = request.password();
 
         User user = userRepository.findByUsername(username)
-                .orElseThrow(()-> new CustomException(UserError.USER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(UserError.USER_NOT_FOUND));
 
-        if (!passwordEncoder.matches(password, user.getPassword())){
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new CustomException(AuthError.WRONG_PASSWORD);
         }
 

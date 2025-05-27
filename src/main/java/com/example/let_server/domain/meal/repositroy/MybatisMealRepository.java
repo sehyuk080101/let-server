@@ -5,7 +5,7 @@ import com.example.let_server.domain.meal.mapper.MealMapper;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class MybatisMealRepository implements MealRepository{
+public class MybatisMealRepository implements MealRepository {
 
     private final MealMapper mealMapper;
 

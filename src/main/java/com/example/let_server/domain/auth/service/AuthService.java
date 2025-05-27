@@ -7,6 +7,8 @@ import com.example.let_server.global.security.jwt.dto.Jwt;
 
 public interface AuthService {
     void signup(SignUpRequest request);
+
     Jwt login(LoginRequest request);
+
     Jwt reissue(ReissueRequest request);
 }

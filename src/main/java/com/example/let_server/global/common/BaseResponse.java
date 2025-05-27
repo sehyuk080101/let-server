@@ -1,4 +1,5 @@
 package com.example.let_server.global.common;
+
 import org.springframework.http.ResponseEntity;
 
 public record BaseResponse<T>(

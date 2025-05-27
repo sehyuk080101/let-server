@@ -23,6 +23,6 @@ public class MenuService {
 
     public Menu findByMenuId(Long menuId) {
         return menuRepository.findByMenuId(menuId)
-                .orElseThrow(()->new CustomException(MenuError.MENU_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(MenuError.MENU_NOT_FOUND));
     }
 }

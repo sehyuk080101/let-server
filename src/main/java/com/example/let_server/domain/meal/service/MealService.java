@@ -13,7 +13,7 @@ import java.util.Date;
 public class MealService {
     private final MealRepository mealRepository;
 
-    public Meal createMeal(Date mealDate, String mealType,float calorie){
+    public Meal createMeal(Date mealDate, String mealType, float calorie) {
         Meal meal = Meal.builder()
                 .mealDate(mealDate)
                 .mealType(MealType.valueOf(mealType))

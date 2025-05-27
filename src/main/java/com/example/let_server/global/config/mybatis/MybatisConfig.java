@@ -19,7 +19,6 @@ import com.example.let_server.domain.user.mapper.UserMapper;
 import com.example.let_server.domain.user.repository.MybatisUserRepository;
 import com.example.let_server.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -38,14 +37,17 @@ public class MybatisConfig {
     public UserRepository userRepository() {
         return new MybatisUserRepository(userMapper);
     }
+
     @Bean
     public MealRepository mealRepository() {
         return new MybatisMealRepository(mealMapper);
     }
+
     @Bean
     public MenuRepository menuRepository() {
         return new MybatisMenuRepository(menuMapper);
     }
+
     @Bean
     public MealMenuRepository mealMenuRepository() {
         return new MybatisMealMenuRepository(mealMenuMapper);

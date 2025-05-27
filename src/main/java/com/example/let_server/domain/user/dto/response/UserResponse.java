@@ -12,7 +12,7 @@ public record UserResponse(
         String realName,
         UserRole role
 ) {
-    public static UserResponse of (User user) {
+    public static UserResponse of(User user) {
         return UserResponse.builder()
                 .userId(user.getUserId())
                 .username(user.getUsername())

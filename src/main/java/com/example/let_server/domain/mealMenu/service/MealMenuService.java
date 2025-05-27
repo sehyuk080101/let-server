@@ -1,11 +1,9 @@
 package com.example.let_server.domain.mealMenu.service;
 
 import com.example.let_server.domain.meal.dto.response.MealResponse;
-import com.example.let_server.domain.mealMenu.dto.response.MealMenuResponse;
 
 import java.util.List;
 
 public interface MealMenuService {
-    void fetchAndSaveMonthlyMeals();
-    List<MealResponse> getMonthlyMenu();
+    List<MealResponse> getMonthlyMenu(String period,Long allergyId);
 }

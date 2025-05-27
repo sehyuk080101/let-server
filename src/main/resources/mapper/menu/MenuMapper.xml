@@ -7,4 +7,10 @@
         insert into Menu(menu_id,menu_name,menu_score,like_count,dislike_count,current_rank)
         values (#{menuId},#{menuName},#{menuScore},#{likeCount},#{dislikeCount},#{currentRank})
     </insert>
+
+    <select id="findByMenuId" resultType="Menu">
+        select menu_id,menu_name,menu_score,like_count,dislike_count,current_rank
+        from Menu
+        where menu_id = #{menuId}
+    </select>
 </mapper>

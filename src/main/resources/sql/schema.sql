@@ -86,3 +86,24 @@ CREATE TABLE `MenuRankHistory` (
                                    UNIQUE (`menu_id`, `date`),
                                    FOREIGN KEY (`menu_id`) REFERENCES `Menu` (`menu_id`)
 );
+
+INSERT INTO `Allergy` (`allergy_name`) VALUES
+                                           ('난류(계란 등)'),
+                                           ('우유'),
+                                           ('메밀'),
+                                           ('땅콩'),
+                                           ('대두(콩)'),
+                                           ('밀'),
+                                           ('고등어'),
+                                           ('게'),
+                                           ('새우'),
+                                           ('돼지고기'),
+                                           ('복숭아'),
+                                           ('토마토'),
+                                           ('아황산염'),
+                                           ('호두'),
+                                           ('닭고기'),
+                                           ('소고기'),
+                                           ('오징어'),
+                                           ('조개류(굴, 전복, 홍합 포함)'),
+                                           ('잣');

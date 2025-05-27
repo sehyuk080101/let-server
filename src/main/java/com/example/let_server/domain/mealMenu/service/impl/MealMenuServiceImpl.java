@@ -9,6 +9,7 @@ import com.example.let_server.domain.mealMenu.service.MealMenuService;
 import com.example.let_server.domain.menu.domain.Menu;
 import com.example.let_server.domain.menu.dto.MenuResponse;
 import com.example.let_server.domain.menu.service.MenuService;
+import com.example.let_server.domain.menuAllergy.service.MenuAllergyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +24,8 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +33,7 @@ public class MealMenuServiceImpl implements MealMenuService {
     private final MealMenuRepository mealMenuRepository;
     private final RestTemplate restTemplate;
     private final MealService mealService;
+    private final MenuAllergyService menuAllergyService;
 
 
     @Value("${KEY}")
@@ -42,7 +46,6 @@ public class MealMenuServiceImpl implements MealMenuService {
 //    }
 
     @Scheduled(cron = "0 0 0 1 * ?")
-    @Override
     public void fetchAndSaveMonthlyMeals() {
         LocalDate now = LocalDate.now();
         String from = now.withDayOfMonth(1).format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -66,9 +69,9 @@ public class MealMenuServiceImpl implements MealMenuService {
     }
 
     @Override
-    public List<MealResponse> getMonthlyMenu() {
+    public List<MealResponse> getMonthlyMenu(String period,Long allergyId) {
         String yearMonth = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        List<MealMenu> mealMenus = mealMenuRepository.findMonthlyMealMenu(yearMonth);
+        List<MealMenu> mealMenus = mealMenuRepository.findMonthlyMealMenu(yearMonth,period, allergyId);
 
         Map<Integer, MealResponse> mealMap = new LinkedHashMap<>();
 
@@ -100,7 +103,6 @@ public class MealMenuServiceImpl implements MealMenuService {
             String calInfo = row.path("CAL_INFO").asText().replace("Kcal", "").trim();
 
             List<String> menus = Arrays.stream(dishName.split("<br/>"))
-                    .map(s -> s.replaceAll("\\(.*?\\)", "").trim()) // 괄호 제거
                     .filter(s -> !s.isEmpty())
                     .toList();
 
@@ -115,11 +117,37 @@ public class MealMenuServiceImpl implements MealMenuService {
             };
 
             Meal meal = mealService.createMeal(date,type,calories);
-            for (String menuName : menus){
+
+            for (String rawMenu : menus) {
+                Matcher matcher = Pattern.compile("\\((\\d+(?:\\.\\d+)*)\\)").matcher(rawMenu);
+                List<Long> allergyIds = new ArrayList<>();
+                if (matcher.find()) {
+                    String[] allergyStrs = matcher.group(1).split("\\.");
+                    for (String s : allergyStrs) {
+                        try {
+                            Long allergyId = Long.parseLong(s);
+                            if (allergyId <= 19)
+                                allergyIds.add(allergyId);
+                        } catch (NumberFormatException ignored) {}
+                    }
+                }
+
+                // 괄호(알러지) 제거 → 메뉴 이름 추출
+                String menuName = rawMenu.replaceAll("\\(.*?\\)", "").trim();
+                if (menuName.isEmpty()) continue;
+
+                // 메뉴 저장
                 Menu menu = menuService.save(menuName);
+
+                // 알러지 매핑
+                for (Long allergyId : allergyIds) {
+                    menuAllergyService.save(menu.getMenuId(), allergyId);
+                }
+
+                // 급식-메뉴 매핑 저장
                 mealMenuRepository.save(MealMenu.builder()
-                                .meal(meal)
-                                .menu(menu)
+                        .meal(meal)
+                        .menu(menu)
                         .build());
             }
 

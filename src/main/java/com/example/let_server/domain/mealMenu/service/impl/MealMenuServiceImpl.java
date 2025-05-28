@@ -85,6 +85,7 @@ public class MealMenuServiceImpl implements MealMenuService {
         log.info("월간 급식 데이터 수집 완료");
     }
 
+    //이 기능 제발 쓰자 ㅜㅜ
     @Override
     public List<MealResponse> getMonthlyMenu(String period, List<Long> allergyIds) {
         String yearMonth = LocalDate.now().format(YEAR_MONTH_FORMATTER);

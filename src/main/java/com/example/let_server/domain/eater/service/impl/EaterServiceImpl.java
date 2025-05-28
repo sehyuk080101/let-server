@@ -1,0 +1,55 @@
+package com.example.let_server.domain.eater.service.impl;
+
+import com.example.let_server.domain.eater.domain.Eater;
+import com.example.let_server.domain.eater.repository.EaterRepository;
+import com.example.let_server.domain.eater.service.EaterService;
+import com.example.let_server.domain.meal.domain.Meal;
+import com.example.let_server.domain.meal.domain.MealType;
+import com.example.let_server.domain.meal.service.MealService;
+import com.example.let_server.domain.user.domain.User;
+import com.example.let_server.domain.user.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class EaterServiceImpl implements EaterService {
+    private final MealService mealService;
+    private final UserService userService;
+    private final EaterRepository eaterRepository;
+
+    @Scheduled(cron = "0 0 0,10,15 * * *")
+    public void insertEater(){
+        MealType currentMealType = getCurrentMealType();
+        LocalDate localDate = LocalDate.now();
+        Date currentDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        Meal meal = mealService.getMealByMealTypeAndMealDate(currentMealType,currentDate);
+        List<User> users = userService.findAllUser();
+
+        for (User user : users) {
+            Eater eater = Eater.builder()
+                    .user(user)
+                    .meal(meal)
+                    .build();
+
+            eaterRepository.save(eater);
+        }
+    }
+
+    private MealType getCurrentMealType(){
+        int hour = LocalDateTime.now().getHour();
+
+        if (hour == 0) return MealType.조식;
+        else if (hour == 10) return MealType.중식;
+        else if (hour == 15) return MealType.석식;
+        else throw new IllegalStateException("예상치 못한 시간입니다: " + hour);
+    }
+}

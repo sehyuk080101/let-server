@@ -3,6 +3,9 @@ package com.example.let_server.global.config.mybatis;
 import com.example.let_server.domain.allergy.mapper.AllergyMapper;
 import com.example.let_server.domain.allergy.repository.AllergyRepository;
 import com.example.let_server.domain.allergy.repository.MybatisAllergyRepository;
+import com.example.let_server.domain.eater.mapper.EaterMapper;
+import com.example.let_server.domain.eater.repository.EaterRepository;
+import com.example.let_server.domain.eater.repository.MybatisEaterRepository;
 import com.example.let_server.domain.meal.mapper.MealMapper;
 import com.example.let_server.domain.meal.repositroy.MealRepository;
 import com.example.let_server.domain.meal.repositroy.MybatisMealRepository;
@@ -32,6 +35,7 @@ public class MybatisConfig {
     private final MealMenuMapper mealMenuMapper;
     private final MenuAllergyMapper menuAllergyMapper;
     private final AllergyMapper allergyMapper;
+    private final EaterMapper eaterMapper;
 
     @Bean
     public UserRepository userRepository() {
@@ -61,6 +65,11 @@ public class MybatisConfig {
     @Bean
     public MenuAllergyRepository menuAllergyRepository() {
         return new MybatisMenuAllergyRepository(menuAllergyMapper);
+    }
+
+    @Bean
+    public EaterRepository eaterRepository() {
+        return new MybatisEaterRepository(eaterMapper);
     }
 
 }

@@ -3,6 +3,7 @@ package com.example.let_server.domain.mealMenu.service.impl;
 import com.example.let_server.domain.meal.domain.Meal;
 import com.example.let_server.domain.meal.domain.MealType;
 import com.example.let_server.domain.meal.dto.response.MealResponse;
+import com.example.let_server.domain.meal.error.MealError;
 import com.example.let_server.domain.meal.service.MealService;
 import com.example.let_server.domain.mealMenu.domain.MealMenu;
 import com.example.let_server.domain.mealMenu.repository.MealMenuRepository;
@@ -11,6 +12,7 @@ import com.example.let_server.domain.menu.domain.Menu;
 import com.example.let_server.domain.menu.dto.MenuResponse;
 import com.example.let_server.domain.menu.service.MenuService;
 import com.example.let_server.domain.menuAllergy.service.MenuAllergyService;
+import com.example.let_server.global.error.CustomException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -84,7 +86,8 @@ public class MealMenuServiceImpl implements MealMenuService {
     @Override
     public List<MealResponse> getMonthlyMenu(String period, List<Long> allergyIds) {
         String yearMonth = LocalDate.now().format(YEAR_MONTH_FORMATTER);
-        MealType mealType = MealType.valueOf(period);
+
+        MealType mealType = parseMealTypeOrThrow(period);
 
         Map<String, Object> params = new HashMap<>();
         params.put("yearMonth", yearMonth);
@@ -94,6 +97,14 @@ public class MealMenuServiceImpl implements MealMenuService {
         List<MealMenu> mealMenus = mealMenuRepository.findMonthlyMealMenu(params);
 
         return groupMealMenusByMeal(mealMenus);
+    }
+
+    private MealType parseMealTypeOrThrow(String period) {
+        try {
+            return MealType.valueOf(period);
+        } catch (IllegalArgumentException e) {
+            throw new CustomException(MealError.MELA_TYPE_NOT_FOUND);
+        }
     }
 
     private DateRange createDateRange(LocalDate date) {

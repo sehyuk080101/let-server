@@ -21,8 +21,7 @@ public class MenuAllergyServiceImpl implements MenuAllergyService {
 
     @Override
     public void save(Long menuId, Long allergyId) {
-        Allergy allergy = allergyService.findByAllergyId(allergyId)
-                .orElseThrow(() -> new CustomException(AllergyError.ALLERGY_NOT_FOUND));
+        Allergy allergy = allergyService.findByAllergyId(allergyId);
 
         Menu menu = menuService.findByMenuId(menuId);
 

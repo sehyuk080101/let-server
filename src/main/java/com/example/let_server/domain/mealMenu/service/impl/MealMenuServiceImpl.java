@@ -1,5 +1,6 @@
 package com.example.let_server.domain.mealMenu.service.impl;
 
+import com.example.let_server.domain.allergy.service.AllergyService;
 import com.example.let_server.domain.meal.domain.Meal;
 import com.example.let_server.domain.meal.domain.MealType;
 import com.example.let_server.domain.meal.dto.response.MealResponse;
@@ -59,6 +60,7 @@ public class MealMenuServiceImpl implements MealMenuService {
     private final MenuAllergyService menuAllergyService;
     private final MenuService menuService;
     private final ObjectMapper objectMapper;
+    private final AllergyService allergyService;
 
     @Value("${KEY}")
     private String apiKey;
@@ -93,6 +95,10 @@ public class MealMenuServiceImpl implements MealMenuService {
         params.put("yearMonth", yearMonth);
         params.put("mealType", mealType); // MealType enum의 name 값
         params.put("allergyList", allergyIds); // 알러지 ID 리스트
+
+        for (Long allergyId : allergyIds){
+            allergyService.findByAllergyId(allergyId);
+        }
 
         List<MealMenu> mealMenus = mealMenuRepository.findMonthlyMealMenu(params);
 

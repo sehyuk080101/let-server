@@ -1,6 +1,7 @@
 package com.example.let_server.domain.mealMenu.service.impl;
 
 import com.example.let_server.domain.meal.domain.Meal;
+import com.example.let_server.domain.meal.domain.MealType;
 import com.example.let_server.domain.meal.dto.response.MealResponse;
 import com.example.let_server.domain.meal.service.MealService;
 import com.example.let_server.domain.mealMenu.domain.MealMenu;
@@ -60,6 +61,7 @@ public class MealMenuServiceImpl implements MealMenuService {
     @Value("${KEY}")
     private String apiKey;
 
+
     @Scheduled(cron = "0 0 0 1 * ?")
     @Transactional
     public void fetchAndSaveMonthlyMeals() {
@@ -80,9 +82,16 @@ public class MealMenuServiceImpl implements MealMenuService {
     }
 
     @Override
-    public List<MealResponse> getMonthlyMenu(String period, Long allergyId) {
+    public List<MealResponse> getMonthlyMenu(String period, List<Long> allergyIds) {
         String yearMonth = LocalDate.now().format(YEAR_MONTH_FORMATTER);
-        List<MealMenu> mealMenus = mealMenuRepository.findMonthlyMealMenu(yearMonth, period, allergyId);
+        MealType mealType = MealType.valueOf(period);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("yearMonth", yearMonth);
+        params.put("mealType", mealType); // MealType enum의 name 값
+        params.put("allergyList", allergyIds); // 알러지 ID 리스트
+
+        List<MealMenu> mealMenus = mealMenuRepository.findMonthlyMealMenu(params);
 
         return groupMealMenusByMeal(mealMenus);
     }

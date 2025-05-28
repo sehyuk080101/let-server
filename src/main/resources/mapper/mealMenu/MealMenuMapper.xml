@@ -30,7 +30,8 @@
         values (#{mealMenuId},#{menu.menuId},#{meal.mealId})
     </insert>
 
-    <select id="findMonthlyMealMenu" resultMap="MealMenuMap" parameterType="string">
+
+    <select id="findMonthlyMealMenu" resultMap="MealMenuMap" parameterType="map">
         SELECT
             mm.meal_menu_id AS meal_menu_id,
             m.menu_id AS menu_id,
@@ -45,10 +46,21 @@
             ml.calorie AS calorie,
             ml.score AS score
         FROM MealMenu mm
-                 JOIN Menu m ON mm.menu_id = m.menu_id
-                 JOIN Meal ml ON mm.meal_id = ml.meal_id
+        JOIN Menu m ON mm.menu_id = m.menu_id
+        JOIN Meal ml ON mm.meal_id = ml.meal_id
+        JOIN MenuAllergy ma ON m.menu_id = ma.menu_id
+        JOIN Allergy a ON ma.allergy_idx = a.allergy_idx
         WHERE DATE_FORMAT(ml.meal_date, '%Y-%m') = #{yearMonth}
+        AND ml.meal_type = #{mealType}
+
+        <if test="allergyList != null and allergyList.size() > 0">
+            AND ma.allergy_idx IN
+            <foreach collection="allergyList" item="allergy" open="(" separator="," close=")">
+                #{allergy}
+            </foreach>
+        </if>
+
         ORDER BY ml.meal_date ASC,
-                 FIELD(ml.meal_type, '조식', '중식', '석식')
+        FIELD(ml.meal_type, '조식', '중식', '석식')
     </select>
 </mapper>

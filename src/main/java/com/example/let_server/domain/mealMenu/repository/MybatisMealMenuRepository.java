@@ -5,6 +5,7 @@ import com.example.let_server.domain.mealMenu.mapper.MealMenuMapper;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class MybatisMealMenuRepository implements MealMenuRepository {
@@ -18,7 +19,7 @@ public class MybatisMealMenuRepository implements MealMenuRepository {
     }
 
     @Override
-    public List<MealMenu> findMonthlyMealMenu(String yearMonth, String period, Long allergyId) {
-        return mealMenuMapper.findMonthlyMealMenu(yearMonth, period, allergyId);
+    public List<MealMenu> findMonthlyMealMenu(Map<String, Object> params) {
+        return mealMenuMapper.findMonthlyMealMenu(params);
     }
 }

@@ -19,4 +19,9 @@
         from User
         where username = #{username}
     </select>
+
+    <select id="findAll" resultType="User">
+        select user_id, username, password, student_id, real_name, role
+        from User
+    </select>
 </mapper>

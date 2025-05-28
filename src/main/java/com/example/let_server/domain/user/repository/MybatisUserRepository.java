@@ -4,6 +4,7 @@ import com.example.let_server.domain.user.domain.User;
 import com.example.let_server.domain.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -26,5 +27,10 @@ public class MybatisUserRepository implements UserRepository {
     @Override
     public Boolean existsByUsername(String username) {
         return userMapper.existsByUsername(username);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userMapper.findAll();
     }
 }

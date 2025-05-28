@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum MealError implements CustomError {
+    MEAL_NOT_FOUND(404,"Meal Not Found"),
     MELA_TYPE_NOT_FOUND(404, "Meal Type not found");
 
     private final int status;

@@ -7,4 +7,15 @@
         insert into MenuAllergy(menu_allergy_id,menu_id,allergy_idx)
         values (#{menuAllergyId},#{menu.menuId},#{allergy.allergyId})
     </insert>
+
+    <select id="findAllergyByMealId" resultType="Allergy">
+        SELECT DISTINCT a.allergy_idx as allergy_id, a.allergy_name
+        FROM MenuAllergy ma
+        JOIN Menu m ON m.menu_id = ma.menu_id
+        JOIN Allergy a ON ma.allergy_idx = a.allergy_idx
+        JOIN MealMenu mm ON mm.menu_id = m.menu_id
+        JOIN Meal ml ON ml.meal_id = mm.meal_id
+        WHERE ml.meal_id = #{mealId}
+        ORDER BY a.allergy_idx
+    </select>
 </mapper>

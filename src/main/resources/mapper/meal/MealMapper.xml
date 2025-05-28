@@ -7,4 +7,10 @@
         insert into Meal(meal_id,meal_date,meal_type,score,calorie)
         values (#{mealId},#{mealDate},#{mealType},#{score},#{calorie})
     </insert>
+
+    <select id="findById" resultType="Meal">
+        SELECT meal_id,meal_date,meal_type,score,calorie
+        FROM Meal
+        WHERE meal_id = #{mealId}
+    </select>
 </mapper>

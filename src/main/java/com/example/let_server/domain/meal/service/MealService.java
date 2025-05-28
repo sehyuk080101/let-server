@@ -2,7 +2,9 @@ package com.example.let_server.domain.meal.service;
 
 import com.example.let_server.domain.meal.domain.Meal;
 import com.example.let_server.domain.meal.domain.MealType;
+import com.example.let_server.domain.meal.error.MealError;
 import com.example.let_server.domain.meal.repositroy.MealRepository;
+import com.example.let_server.global.error.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,5 +22,10 @@ public class MealService {
                 .calorie(calorie)
                 .build();
         return mealRepository.save(meal);
+    }
+
+    public Meal getMealById(Long mealId) {
+        return mealRepository.findById(mealId)
+                .orElseThrow(()->new CustomException(MealError.MEAL_NOT_FOUND));
     }
 }

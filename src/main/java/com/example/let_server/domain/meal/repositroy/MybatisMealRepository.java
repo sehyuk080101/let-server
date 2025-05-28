@@ -1,9 +1,11 @@
 package com.example.let_server.domain.meal.repositroy;
 
 import com.example.let_server.domain.meal.domain.Meal;
+import com.example.let_server.domain.meal.domain.MealType;
 import com.example.let_server.domain.meal.mapper.MealMapper;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Date;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -20,5 +22,10 @@ public class MybatisMealRepository implements MealRepository {
     @Override
     public Optional<Meal> findById(Long mealId) {
         return mealMapper.findById(mealId);
+    }
+
+    @Override
+    public Optional<Meal> findByMealTypeAndMealDate(MealType mealType, Date mealDate) {
+        return mealMapper.findByMealTypeAndMealDate(mealType, mealDate);
     }
 }

@@ -28,4 +28,9 @@ public class MealService {
         return mealRepository.findById(mealId)
                 .orElseThrow(()->new CustomException(MealError.MEAL_NOT_FOUND));
     }
+
+    public Meal getMealByMealTypeAndMealDate(MealType mealType, Date mealDate) {
+        return mealRepository.findByMealTypeAndMealDate(mealType,mealDate)
+                .orElseThrow(()->new CustomException(MealError.MEAL_NOT_FOUND));
+    }
 }

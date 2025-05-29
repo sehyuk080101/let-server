@@ -16,7 +16,4 @@ public class Eater {
     private User user;
     private Meal meal;
     private boolean eaten;
-    private static int firstGradeTotalCnt;
-    private static int secondGradeTotalCnt;
-    private static int thirdGradeTotalCnt;
 }

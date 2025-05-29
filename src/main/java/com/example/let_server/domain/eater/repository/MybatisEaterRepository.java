@@ -4,6 +4,8 @@ import com.example.let_server.domain.eater.domain.Eater;
 import com.example.let_server.domain.eater.mapper.EaterMapper;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 public class MybatisEaterRepository implements EaterRepository {
     private final EaterMapper eaterMapper;
@@ -12,5 +14,10 @@ public class MybatisEaterRepository implements EaterRepository {
     public Eater save(Eater eater) {
         eaterMapper.insertEater(eater);
         return eater;
+    }
+
+    @Override
+    public List<Eater> findByGrade(Long grade) {
+        return eaterMapper.findByGrade(grade);
     }
 }

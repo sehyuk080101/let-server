@@ -3,8 +3,36 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.let_server.domain.eater.mapper.EaterMapper">
+
+    <resultMap id="EaterResponseMap" type="com.example.let_server.domain.eater.dto.response.EaterResponse">
+        <id property="eaterId" column="eater_id"/>
+        <result property="eaten" column="eaten"/>
+
+        <association property="user" javaType="com.example.let_server.domain.user.dto.response.UserEaterResponse">
+            <id property="userId" column="user_id"/>
+            <result property="studentId" column="student_id"/>
+            <result property="realName" column="real_name"/>
+        </association>
+    </resultMap>
+
     <insert id="insertEater" useGeneratedKeys = "true" keyProperty="eaterId">
         insert into Eater(eater_id,user_id,meal_id,eaten)
         values (#{eaterId}, #{user.userId}, #{meal.mealId}, #{eaten})
     </insert>
+
+    <select id="findByGrade" resultMap="EaterResponseMap" parameterType="long">
+        <bind name="lowerBound" value="_parameter * 1000"/>
+        <bind name="upperBound" value="(_parameter + 1) * 1000"/>
+        SELECT
+            e.eater_id AS eater_id,
+            e.eaten AS eaten,
+            u.user_id AS user_id,
+            u.student_id AS student_id,
+            u.real_name AS real_name
+        FROM Eater e
+                 JOIN User u ON e.user_id = u.user_id
+        WHERE u.student_id &gt;= #{lowerBound}
+        AND u.student_id &lt; #{upperBound}
+    </select>
+
 </mapper>

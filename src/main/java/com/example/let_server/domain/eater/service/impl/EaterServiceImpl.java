@@ -1,6 +1,7 @@
 package com.example.let_server.domain.eater.service.impl;
 
 import com.example.let_server.domain.eater.domain.Eater;
+import com.example.let_server.domain.eater.dto.response.EaterResponse;
 import com.example.let_server.domain.eater.repository.EaterRepository;
 import com.example.let_server.domain.eater.service.EaterService;
 import com.example.let_server.domain.meal.domain.Meal;
@@ -51,5 +52,11 @@ public class EaterServiceImpl implements EaterService {
         else if (hour == 10) return MealType.중식;
         else if (hour == 15) return MealType.석식;
         else throw new IllegalStateException("예상치 못한 시간입니다: " + hour);
+    }
+
+    @Override
+    public List<EaterResponse> findByGrade(Long grade) { //이상한 학년값 들어오면 에러처리 하는거 구현 해야함
+        return eaterRepository.findByGrade(grade).stream()
+                .map(EaterResponse::of).toList();
     }
 }

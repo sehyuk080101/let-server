@@ -2,6 +2,7 @@ package com.example.let_server.domain.eater.service.impl;
 
 import com.example.let_server.domain.eater.domain.Eater;
 import com.example.let_server.domain.eater.dto.response.EaterResponse;
+import com.example.let_server.domain.eater.error.EaterError;
 import com.example.let_server.domain.eater.repository.EaterRepository;
 import com.example.let_server.domain.eater.service.EaterService;
 import com.example.let_server.domain.meal.domain.Meal;
@@ -9,6 +10,7 @@ import com.example.let_server.domain.meal.domain.MealType;
 import com.example.let_server.domain.meal.service.MealService;
 import com.example.let_server.domain.user.domain.User;
 import com.example.let_server.domain.user.service.UserService;
+import com.example.let_server.global.error.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -55,7 +57,11 @@ public class EaterServiceImpl implements EaterService {
     }
 
     @Override
-    public List<EaterResponse> findByGrade(Long grade) { //이상한 학년값 들어오면 에러처리 하는거 구현 해야함
+    public List<EaterResponse> findByGrade(Long grade) {
+        if (grade == null || grade < 1 || grade > 3) {
+            throw new CustomException(EaterError.INVALID_GRADE);
+        }
+
         return eaterRepository.findByGrade(grade).stream()
                 .map(EaterResponse::of).toList();
     }

@@ -4,11 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.let_server.domain.eater.mapper.EaterMapper">
 
-    <resultMap id="EaterResponseMap" type="com.example.let_server.domain.eater.dto.response.EaterResponse">
+    <resultMap id="EaterResponseMap" type="com.example.let_server.domain.eater.domain.Eater">
         <id property="eaterId" column="eater_id"/>
         <result property="eaten" column="eaten"/>
-
-        <association property="user" javaType="com.example.let_server.domain.user.dto.response.UserEaterResponse">
+        <association property="user" javaType="com.example.let_server.domain.user.domain.User">
             <id property="userId" column="user_id"/>
             <result property="studentId" column="student_id"/>
             <result property="realName" column="real_name"/>

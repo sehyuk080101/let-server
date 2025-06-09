@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface MealMenuService {
     List<MealResponse> getMonthlyMenu(String period, List<Long> allergyIds);
+    List<MealResponse> getMaxEatersPerMealType();
 }

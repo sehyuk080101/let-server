@@ -22,4 +22,9 @@ public class MybatisMealMenuRepository implements MealMenuRepository {
     public List<MealMenu> findMonthlyMealMenu(Map<String, Object> params) {
         return mealMenuMapper.findMonthlyMealMenu(params);
     }
+
+    @Override
+    public List<MealMenu> findMaxEatersPerMealType(int year, int month) {
+        return mealMenuMapper.findMaxEatersPerMealType(year, month);
+    }
 }

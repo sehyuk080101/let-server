@@ -33,4 +33,10 @@ public class MealMenuController {
     ) {
         return ResponseEntity.ok(mealMenuService.getMonthlyMenu(period, allergyIds));
     }
+
+    @GetMapping("/maxEater")
+    @Operation(summary = "이번달 가장 많은 식사자를 가진 급식(아침/점심/저녁)")
+    public ResponseEntity<List<MealResponse>> getMaxEatersPerMealType(){
+        return ResponseEntity.ok(mealMenuService.getMaxEatersPerMealType());
+    }
 }

@@ -106,6 +106,15 @@ public class MealMenuServiceImpl implements MealMenuService {
         return groupMealMenusByMeal(mealMenus);
     }
 
+    @Override
+    public List<MealResponse> getMaxEatersPerMealType() {
+        LocalDate now = LocalDate.now();
+        int year = now.getYear();
+        int month = now.getMonthValue();
+        List<MealMenu> mealMenus = mealMenuRepository.findMaxEatersPerMealType(year, month);
+        return groupMealMenusByMeal(mealMenus);
+    }
+
     private MealType parseMealTypeOrThrow(String period) {
         try {
             return MealType.valueOf(period);

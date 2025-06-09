@@ -9,4 +9,6 @@ public interface MealMenuRepository {
     MealMenu save(MealMenu mealMenu);
 
     List<MealMenu> findMonthlyMealMenu(Map<String, Object> params);
+    List<MealMenu> findMaxEatersPerMealType(int year,int month);
+
 }

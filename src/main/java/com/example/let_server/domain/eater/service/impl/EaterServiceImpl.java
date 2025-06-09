@@ -1,6 +1,7 @@
 package com.example.let_server.domain.eater.service.impl;
 
 import com.example.let_server.domain.eater.domain.Eater;
+import com.example.let_server.domain.eater.dto.response.EaterRatioResponse;
 import com.example.let_server.domain.eater.dto.response.EaterResponse;
 import com.example.let_server.domain.eater.error.EaterError;
 import com.example.let_server.domain.eater.repository.EaterRepository;
@@ -64,5 +65,12 @@ public class EaterServiceImpl implements EaterService {
 
         return eaterRepository.findByGrade(grade).stream()
                 .map(EaterResponse::of).toList();
+    }
+
+    @Override
+    public List<EaterRatioResponse> getEaterRation(String mealType) {
+        LocalDate localDate = LocalDate.now();
+        Date currentDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return eaterRepository.getEaterRation(mealType,currentDate);
     }
 }

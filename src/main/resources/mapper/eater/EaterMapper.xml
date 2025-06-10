@@ -36,40 +36,26 @@
 
     <select id="getEaterRation" resultType="com.example.let_server.domain.eater.dto.response.EaterRatioResponse">
         SELECT
-        meal_list.meal_type AS mealType,
-        IFNULL(MAX(CASE WHEN sub.grade = 1 THEN sub.rate END), 0) AS grade1Ration,
-        IFNULL(MAX(CASE WHEN sub.grade = 2 THEN sub.rate END), 0) AS grade2Ration,
-        IFNULL(MAX(CASE WHEN sub.grade = 3 THEN sub.rate END), 0) AS grade3Ration
-        FROM
-        (
+        base.meal_type,
+        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 THEN 1 ELSE 0 END), 0), 0), 0) AS grade1Ration,
+        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 THEN 1 ELSE 0 END), 0), 0), 0) AS grade2Ration,
+        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 THEN 1 ELSE 0 END), 0), 0), 0) AS grade3Ration
+        FROM (
         SELECT '조식' AS meal_type
         UNION ALL SELECT '중식'
         UNION ALL SELECT '석식'
-        ) meal_list
-        LEFT JOIN (
-        SELECT
-        FLOOR(u.student_id / 1000) AS grade,
-        m.meal_type,
-        ROUND(COUNT(DISTINCT u.user_id) * 100.0 / t.total_count) AS rate
-        FROM Eater e
-        JOIN User u ON e.user_id = u.user_id
-        JOIN Meal m ON e.meal_id = m.meal_id
-        JOIN (
-        SELECT FLOOR(student_id / 1000) AS grade, COUNT(*) AS total_count
-        FROM User
-        GROUP BY grade
-        ) t ON FLOOR(u.student_id / 1000) = t.grade
-        WHERE e.eaten = TRUE
-        AND DATE(m.meal_date) = #{mealDate}
+        ) base
+        LEFT JOIN Meal m ON base.meal_type = m.meal_type
+        LEFT JOIN Eater e ON m.meal_id = e.meal_id
+        LEFT JOIN User u ON e.user_id = u.user_id
+        WHERE DATE(m.meal_date) = #{mealDate}
         <if test="mealType != null">
             AND m.meal_type = #{mealType}
         </if>
-        GROUP BY grade, m.meal_type
-        ) sub ON meal_list.meal_type = sub.meal_type
-        <if test="mealType != null">
-            WHERE meal_list.meal_type = #{mealType}
-        </if>
-        GROUP BY meal_list.meal_type
-        ORDER BY FIELD(meal_list.meal_type, '조식', '중식', '석식')
+        GROUP BY base.meal_type
+        ORDER BY FIELD(base.meal_type, '조식', '중식', '석식')
     </select>
 </mapper>

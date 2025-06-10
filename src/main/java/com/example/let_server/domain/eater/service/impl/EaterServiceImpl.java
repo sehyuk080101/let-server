@@ -51,10 +51,13 @@ public class EaterServiceImpl implements EaterService {
     private MealType getCurrentMealType(){
         int hour = LocalDateTime.now().getHour();
 
-        if (hour == 0) return MealType.조식;
-        else if (hour == 10) return MealType.중식;
-        else if (hour == 15) return MealType.석식;
-        else throw new IllegalStateException("예상치 못한 시간입니다: " + hour);
+        if (hour < 10) {
+            return MealType.조식;
+        } else if (hour < 15) {
+            return MealType.중식;
+        } else {
+            return MealType.석식;
+        }
     }
 
     @Override

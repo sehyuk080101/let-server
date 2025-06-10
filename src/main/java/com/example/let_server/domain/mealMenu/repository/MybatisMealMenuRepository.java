@@ -1,5 +1,6 @@
 package com.example.let_server.domain.mealMenu.repository;
 
+import com.example.let_server.domain.meal.dto.response.MaxEatersMealWithCountResponse;
 import com.example.let_server.domain.mealMenu.domain.MealMenu;
 import com.example.let_server.domain.mealMenu.mapper.MealMenuMapper;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class MybatisMealMenuRepository implements MealMenuRepository {
     }
 
     @Override
-    public List<MealMenu> findMaxEatersPerMealType(int year, int month) {
+    public List<MaxEatersMealWithCountResponse> findMaxEatersPerMealType(int year, int month) {
         return mealMenuMapper.findMaxEatersPerMealType(year, month);
     }
 }

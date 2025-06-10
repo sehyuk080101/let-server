@@ -3,6 +3,18 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.let_server.domain.mealMenu.mapper.MealMenuMapper">
+    <resultMap id="MaxEaterMealResponseMap" type="com.example.let_server.domain.meal.dto.response.MaxEatersMealWithCountResponse">
+        <id property="mealId" column="meal_id"/>
+        <result property="mealDate" column="meal_date"/>
+        <result property="mealType" column="meal_type"/>
+        <result property="calorie" column="calorie"/>
+        <result property="eaterCount" column="eater_count"/>
+
+        <collection property="menus" ofType="com.example.let_server.domain.menu.dto.MenuResponse">
+            <id property="menuId" column="menu_id"/>
+            <result property="menuName" column="menu_name"/>
+        </collection>
+    </resultMap>
 
     <resultMap id="MealMenuMap" type="com.example.let_server.domain.mealMenu.domain.MealMenu">
         <id property="mealMenuId" column="meal_menu_id"/>
@@ -33,18 +45,18 @@
 
     <select id="findMonthlyMealMenu" resultMap="MealMenuMap" parameterType="map">
         SELECT
-            mm.meal_menu_id AS meal_menu_id,
-            m.menu_id AS menu_id,
-            m.menu_name AS menu_name,
-            m.menu_score AS menu_score,
-            m.like_count AS like_count,
-            m.dislike_count AS dislike_count,
-            m.current_rank AS current_rank,
-            ml.meal_id AS meal_id,
-            ml.meal_date AS meal_date,
-            ml.meal_type AS meal_type,
-            ml.calorie AS calorie,
-            ml.score AS score
+        mm.meal_menu_id AS meal_menu_id,
+        m.menu_id AS menu_id,
+        m.menu_name AS menu_name,
+        m.menu_score AS menu_score,
+        m.like_count AS like_count,
+        m.dislike_count AS dislike_count,
+        m.current_rank AS current_rank,
+        ml.meal_id AS meal_id,
+        ml.meal_date AS meal_date,
+        ml.meal_type AS meal_type,
+        ml.calorie AS calorie,
+        ml.score AS score
         FROM MealMenu mm
         JOIN Menu m ON mm.menu_id = m.menu_id
         JOIN Meal ml ON mm.meal_id = ml.meal_id
@@ -64,7 +76,7 @@
         FIELD(ml.meal_type, '조식', '중식', '석식')
     </select>
 
-    <select id="findMaxEatersPerMealType" resultMap="MealMenuMap">
+    <select id="findMaxEatersPerMealType" resultMap="MaxEaterMealResponseMap">
         WITH meal_counts AS (
             SELECT
                 m.meal_id,
@@ -96,7 +108,9 @@
             ml.meal_date,
             ml.meal_type,
             ml.calorie,
-            ml.score
+            ml.score,
+
+            r.eater_count AS eater_count
 
         FROM ranked_meals r
                  JOIN Meal ml ON r.meal_id = ml.meal_id

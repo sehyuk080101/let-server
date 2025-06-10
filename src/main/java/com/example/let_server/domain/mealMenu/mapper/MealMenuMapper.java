@@ -1,5 +1,6 @@
 package com.example.let_server.domain.mealMenu.mapper;
 
+import com.example.let_server.domain.meal.dto.response.MaxEatersMealWithCountResponse;
 import com.example.let_server.domain.mealMenu.domain.MealMenu;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -13,5 +14,5 @@ public interface MealMenuMapper {
 
     List<MealMenu> findMonthlyMealMenu(Map<String, Object> params);
 
-    List<MealMenu> findMaxEatersPerMealType(@Param("year") int year, @Param("month") int month);
+    List<MaxEatersMealWithCountResponse> findMaxEatersPerMealType(@Param("year") int year, @Param("month") int month);
 }

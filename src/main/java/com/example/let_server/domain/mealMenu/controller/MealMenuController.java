@@ -1,5 +1,6 @@
 package com.example.let_server.domain.mealMenu.controller;
 
+import com.example.let_server.domain.meal.dto.response.MaxEatersMealWithCountResponse;
 import com.example.let_server.domain.meal.dto.response.MealResponse;
 import com.example.let_server.domain.mealMenu.service.MealMenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,7 +37,7 @@ public class MealMenuController {
 
     @GetMapping("/maxEater")
     @Operation(summary = "이번달 가장 많은 식사자를 가진 급식(아침/점심/저녁)")
-    public ResponseEntity<List<MealResponse>> getMaxEatersPerMealType(){
+    public ResponseEntity<List<MaxEatersMealWithCountResponse>> getMaxEatersPerMealType(){
         return ResponseEntity.ok(mealMenuService.getMaxEatersPerMealType());
     }
 }

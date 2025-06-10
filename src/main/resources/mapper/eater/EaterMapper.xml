@@ -58,4 +58,13 @@
         GROUP BY base.meal_type
         ORDER BY FIELD(base.meal_type, '조식', '중식', '석식')
     </select>
+
+    <select id="getNotEaterCount" resultType="int">
+        SELECT COUNT(*)
+        FROM Eater e
+                 JOIN Meal m ON e.meal_id = m.meal_id
+        WHERE m.meal_type = #{mealType}
+          AND DATE(m.meal_date) = #{mealDate}
+          AND e.eaten = FALSE
+    </select>
 </mapper>

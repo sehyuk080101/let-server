@@ -30,4 +30,10 @@ public class EaterController {
             @RequestParam(required = false) String mealType) {
         return ResponseEntity.ok(eaterService.getEaterRation(mealType));
     }
+
+    @GetMapping("/not-eaten")
+    @Operation(summary = "현재 식사하지 않은 사람 수 조회")
+    public ResponseEntity<Integer> getNotEaterCount() {
+        return ResponseEntity.ok(eaterService.getNotEaterCount());
+    }
 }

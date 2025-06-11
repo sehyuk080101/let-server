@@ -36,4 +36,10 @@ public class EaterController {
     public ResponseEntity<Integer> getNotEaterCount() {
         return ResponseEntity.ok(eaterService.getNotEaterCount());
     }
+
+    @GetMapping("/month/meal-rate")
+    @Operation(summary = "이번달 식사자 비율 조회")
+    public ResponseEntity<List<EaterRatioResponse>> getMealRateByMonth(){
+        return ResponseEntity.ok(eaterService.getEaterRationMonthly());
+    }
 }

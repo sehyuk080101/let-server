@@ -9,4 +9,5 @@ public interface EaterService {
     List<EaterResponse> findByGrade(Long grade);
     List<EaterRatioResponse> getEaterRation(String mealType);
     Integer getNotEaterCount();
+    List<EaterRatioResponse> getEaterRationMonthly();
 }

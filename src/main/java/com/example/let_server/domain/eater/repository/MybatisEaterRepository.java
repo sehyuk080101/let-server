@@ -33,4 +33,9 @@ public class MybatisEaterRepository implements EaterRepository {
     public Integer getNotEaterCount(MealType mealType, Date mealDate) {
         return eaterMapper.getNotEaterCount(mealType,mealDate);
     }
+
+    @Override
+    public List<EaterRatioResponse> getEaterRationMonthly(MealType mealType,int year,int month) {
+        return eaterMapper.getEaterRationMonthly(mealType,year,month);
+    }
 }

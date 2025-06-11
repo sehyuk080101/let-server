@@ -84,4 +84,13 @@ public class EaterServiceImpl implements EaterService {
         Date currentDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         return eaterRepository.getNotEaterCount(currentMealType,currentDate);
     }
+
+    @Override
+    public List<EaterRatioResponse> getEaterRationMonthly() {
+        LocalDate now = LocalDate.now();
+        int year = now.getYear();
+        int month = now.getMonthValue();
+        MealType currentMealType = getCurrentMealType();
+        return eaterRepository.getEaterRationMonthly(currentMealType,year,month);
+    }
 }

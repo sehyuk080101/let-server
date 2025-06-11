@@ -15,4 +15,6 @@ public interface EaterMapper {
     List<Eater> findByGrade(Long grade);
     List<EaterRatioResponse> getEaterRation(@Param("mealType") String mealType,@Param("mealDate") Date mealDate);
     Integer getNotEaterCount(@Param("mealType") MealType mealType, @Param("mealDate") Date mealDate);
+    List<EaterRatioResponse> getEaterRationMonthly(@Param("mealType") MealType mealType,@Param("year") int year,@Param("month") int month);
+
 }

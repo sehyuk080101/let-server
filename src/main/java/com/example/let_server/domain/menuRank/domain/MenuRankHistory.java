@@ -1,4 +1,4 @@
-package com.example.let_server.domain.menuRankHistory.domain;
+package com.example.let_server.domain.menuRank.domain;
 
 import com.example.let_server.domain.menu.domain.Menu;
 

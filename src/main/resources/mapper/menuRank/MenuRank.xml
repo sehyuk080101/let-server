@@ -1,7 +1,15 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.let_server.domain.mealRating.mapper.MealRatingMapper">
+<mapper namespace="com.example.let_server.domain.menuRank.mapper.MenuRankMapper">
+
+    <resultMap id="MenuRankingResultMap" type="com.example.let_server.domain.menuRank.dto.response.MenuRankingDto">
+        <result property="menuId" column="menu_id"/>
+        <result property="menuName" column="menu_name"/>
+        <result property="menuScore" column="menu_score"/>
+        <result property="currentRank" column="current_rank"/>
+    </resultMap>
+
     <update id="updateMenuScoreByWilson">
         UPDATE Menu
         SET menu_score = (
@@ -20,5 +28,9 @@
             )
     </update>
 
-
+    <select id="findAllOrderByScoreDesc" resultMap="MenuRankingResultMap">
+        SELECT menu_id, menu_name, menu_score, current_rank
+        FROM Menu
+        ORDER BY menu_score DESC
+    </select>
 </mapper>

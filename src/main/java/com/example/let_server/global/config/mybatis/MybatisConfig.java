@@ -18,6 +18,9 @@ import com.example.let_server.domain.menu.repository.MybatisMenuRepository;
 import com.example.let_server.domain.menuAllergy.mapper.MenuAllergyMapper;
 import com.example.let_server.domain.menuAllergy.repository.MenuAllergyRepository;
 import com.example.let_server.domain.menuAllergy.repository.MybatisMenuAllergyRepository;
+import com.example.let_server.domain.menuRank.mapper.MenuRankMapper;
+import com.example.let_server.domain.menuRank.repository.MenuRankRepository;
+import com.example.let_server.domain.menuRank.repository.MybatisMenuRankRepository;
 import com.example.let_server.domain.user.mapper.UserMapper;
 import com.example.let_server.domain.user.repository.MybatisUserRepository;
 import com.example.let_server.domain.user.repository.UserRepository;
@@ -36,6 +39,7 @@ public class MybatisConfig {
     private final MenuAllergyMapper menuAllergyMapper;
     private final AllergyMapper allergyMapper;
     private final EaterMapper eaterMapper;
+    private final MenuRankMapper menuRankMapper;
 
     @Bean
     public UserRepository userRepository() {
@@ -72,4 +76,8 @@ public class MybatisConfig {
         return new MybatisEaterRepository(eaterMapper);
     }
 
+    @Bean
+    public MenuRankRepository menuRankRepository() {
+        return new MybatisMenuRankRepository(menuRankMapper);
+    }
 }

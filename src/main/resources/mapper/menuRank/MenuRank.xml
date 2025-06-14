@@ -33,4 +33,15 @@
         FROM Menu
         ORDER BY menu_score DESC
     </select>
+
+    <insert id="saveMenuRankHistory">
+        INSERT INTO MenuRankHistory (menu_id, date, rank, rank_diff)
+        VALUES (#{menuId}, #{date}, #{rank}, #{rankDiff})
+    </insert>
+
+    <select id="getRankDiff" resultType="int">
+        select rank_diff
+        from MenuRankHistory as mr
+        where menu_id = #{menuId} AND mr.date = #{date}
+    </select>
 </mapper>

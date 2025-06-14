@@ -13,4 +13,9 @@
         from Menu
         where menu_id = #{menuId}
     </select>
+
+    <update id="updateCurrentRank">
+        update Menu set current_rank = #{rank}
+        where menu_id = #{menuId}
+    </update>
 </mapper>

@@ -8,4 +8,6 @@ public interface MenuRepository {
     Menu save(Menu menu);
 
     Optional<Menu> findByMenuId(Long menuId);
+
+    void updateCurrentRank(Long menuId, int rank);
 }

@@ -18,4 +18,8 @@
         update Menu set current_rank = #{rank}
         where menu_id = #{menuId}
     </update>
+
+    <select id="findByName" resultType="com.example.let_server.domain.menu.domain.Menu">
+        SELECT * FROM Menu WHERE menu_name = #{menuName} LIMIT 1
+    </select>
 </mapper>

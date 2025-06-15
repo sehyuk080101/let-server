@@ -13,4 +13,6 @@ public interface MenuMapper {
     Optional<Menu> findByMenuId(Long menuId);
 
     void updateCurrentRank(@Param("menuId") Long menuId, @Param("rank") int rank);
+
+    Optional<Menu> findByName(String menuName);
 }

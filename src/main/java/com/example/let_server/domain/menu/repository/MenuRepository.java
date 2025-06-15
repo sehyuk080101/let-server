@@ -10,4 +10,7 @@ public interface MenuRepository {
     Optional<Menu> findByMenuId(Long menuId);
 
     void updateCurrentRank(Long menuId, int rank);
+
+    Optional<Menu> findByName(String menuName);
+
 }

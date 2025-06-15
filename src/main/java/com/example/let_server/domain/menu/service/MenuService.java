@@ -7,6 +7,8 @@ import com.example.let_server.global.error.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MenuService {
@@ -24,5 +26,9 @@ public class MenuService {
     public Menu findByMenuId(Long menuId) {
         return menuRepository.findByMenuId(menuId)
                 .orElseThrow(() -> new CustomException(MenuError.MENU_NOT_FOUND));
+    }
+
+    public Optional<Menu> findByName(String menuName) {
+        return menuRepository.findByName(menuName);
     }
 }

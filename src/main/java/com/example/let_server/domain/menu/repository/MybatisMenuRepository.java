@@ -25,4 +25,9 @@ public class MybatisMenuRepository implements MenuRepository {
     public void updateCurrentRank(Long menuId, int rank) {
         menuMapper.updateCurrentRank(menuId,rank);
     }
+
+    @Override
+    public Optional<Menu> findByName(String menuName) {
+        return menuMapper.findByName(menuName);
+    }
 }

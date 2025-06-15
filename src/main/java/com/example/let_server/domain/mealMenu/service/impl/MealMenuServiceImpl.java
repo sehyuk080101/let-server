@@ -219,7 +219,9 @@ public class MealMenuServiceImpl implements MealMenuService {
             return;
         }
 
-        Menu menu = menuService.save(menuName);
+        Menu menu = menuService.findByName(menuName)
+                .orElseGet(() -> menuService.save(menuName));
+
         saveAllergyMappings(menu.getMenuId(), allergyIds);
         saveMealMenuMapping(meal, menu);
     }
@@ -261,6 +263,7 @@ public class MealMenuServiceImpl implements MealMenuService {
                 .build();
         mealMenuRepository.save(mealMenu);
     }
+
 
     // Record classes for better data modeling
     private record DateRange(String from, String to) {

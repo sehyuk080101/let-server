@@ -4,6 +4,7 @@ import com.example.let_server.domain.allergy.service.AllergyService;
 import com.example.let_server.domain.meal.domain.Meal;
 import com.example.let_server.domain.meal.domain.MealType;
 import com.example.let_server.domain.meal.dto.response.MaxEatersMealWithCountResponse;
+import com.example.let_server.domain.meal.dto.response.MealDailyResponse;
 import com.example.let_server.domain.meal.dto.response.MealResponse;
 import com.example.let_server.domain.meal.error.MealError;
 import com.example.let_server.domain.meal.service.MealService;
@@ -107,12 +108,19 @@ public class MealMenuServiceImpl implements MealMenuService {
         return groupMealMenusByMeal(mealMenus);
     }
 
+
+
     @Override
     public List<MaxEatersMealWithCountResponse> getMaxEatersPerMealType() {
         LocalDate now = LocalDate.now();
         int year = now.getYear();
         int month = now.getMonthValue();
         return mealMenuRepository.findMaxEatersPerMealType(year, month);
+    }
+
+    @Override
+    public List<MealDailyResponse> getMealDaily(Date today) {
+        return mealMenuRepository.findMealDaily(today);
     }
 
     private MealType parseMealTypeOrThrow(String period) {

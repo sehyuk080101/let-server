@@ -1,6 +1,7 @@
 package com.example.let_server.domain.mealMenu.controller;
 
 import com.example.let_server.domain.meal.dto.response.MaxEatersMealWithCountResponse;
+import com.example.let_server.domain.meal.dto.response.MealDailyResponse;
 import com.example.let_server.domain.meal.dto.response.MealResponse;
 import com.example.let_server.domain.mealMenu.service.MealMenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -8,9 +9,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -35,9 +38,17 @@ public class MealMenuController {
         return ResponseEntity.ok(mealMenuService.getMonthlyMenu(period, allergyIds));
     }
 
-    @GetMapping("/maxEater")
+    @GetMapping("/max-eater")
     @Operation(summary = "이번달 가장 많은 식사자를 가진 급식(아침/점심/저녁)")
     public ResponseEntity<List<MaxEatersMealWithCountResponse>> getMaxEatersPerMealType(){
         return ResponseEntity.ok(mealMenuService.getMaxEatersPerMealType());
+    }
+
+    @GetMapping("/daily/{today}")
+    @Operation(summary = "하루치 급식 조회")
+    public ResponseEntity<List<MealDailyResponse>> getMealDaily(
+            @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date today
+            ){
+        return ResponseEntity.ok(mealMenuService.getMealDaily(today));
     }
 }

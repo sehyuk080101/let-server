@@ -1,9 +1,7 @@
-name: Deploy to AWS EC2
+name: Deploy to EC2
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
     branches: [ main, master ]
 
 jobs:
@@ -14,40 +12,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        
-    - name: Build with Gradle
-      run: ./gradlew build -x test
-      
-    - name: Build Docker image
-      run: docker build -t let-server .
-      
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
-        
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v2
-      
-    - name: Tag and push Docker image to ECR
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: let-server
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        docker tag let-server:latest $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker tag let-server:latest $ECR_REGISTRY/$ECR_REPOSITORY:latest
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-        docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
-        
     - name: Deploy to EC2
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -55,15 +19,18 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          # ECR 로그인
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
+          # 프로젝트 디렉토리로 이동
+          cd /home/ubuntu/LET_SERVER
+          
+          # 최신 코드 풀
+          git pull origin main
+          
+          # Docker 이미지 빌드
+          docker build -t let-server .
           
           # 기존 컨테이너 중지 및 삭제
           docker stop let-server || true
           docker rm let-server || true
-          
-          # 최신 이미지 풀
-          docker pull ${{ steps.login-ecr.outputs.registry }}/let-server:latest
           
           # 새 컨테이너 실행
           docker run -d \
@@ -76,7 +43,8 @@ jobs:
             -e HOST="${{ secrets.REDIS_HOST }}" \
             -e PORT="${{ secrets.REDIS_PORT }}" \
             -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
-            ${{ steps.login-ecr.outputs.registry }}/let-server:latest
+            let-server
           
           # 배포 확인
-          docker ps | grep let-server 
+          docker ps | grep let-server
+          echo "Deployment completed!" 

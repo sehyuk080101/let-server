@@ -9,7 +9,7 @@ COPY src ./src
 RUN ./gradlew build -x test
 
 # Runtime stage
-FROM openjdk:17-jre-slim
+FROM amazoncorretto:17
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar ./app.jar
 EXPOSE 8080

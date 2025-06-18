@@ -43,6 +43,7 @@ jobs:
             -e HOST="${{ secrets.REDIS_HOST }}" \
             -e PORT="${{ secrets.REDIS_PORT }}" \
             -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
+            -e KEY="${{ secrets.KEY }}" \
             let-server
           
           # 배포 확인

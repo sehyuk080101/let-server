@@ -19,6 +19,7 @@ import com.example.let_server.global.error.CustomException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,6 +71,7 @@ public class MealMenuServiceImpl implements MealMenuService {
 
     @Scheduled(cron = "0 0 0 1 * ?")
     @Transactional
+    @PostConstruct
     public void fetchAndSaveMonthlyMeals() {
         log.info("월간 급식 데이터 수집 시작");
 

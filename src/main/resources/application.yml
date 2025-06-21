@@ -4,6 +4,12 @@ spring:
     username: ${DB_USER}
     password: ${PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   data:
     redis:
       host: ${HOST}
@@ -22,4 +28,12 @@ mybatis:
   type-aliases-package: com.example.let_server.domain
   configuration:
     map-underscore-to-camel-case: true
+    default-executor-type: BATCH
+    default-fetch-size: 100
   mapper-locations: classpath:mapper/**/*.xml
+
+logging:
+  level:
+    com.example.let_server.domain.mealMenu.service.impl.MealMenuServiceImpl: INFO
+    org.springframework.jdbc.core: WARN
+    org.springframework.transaction: WARN

@@ -142,13 +142,13 @@
             FROM Meal m
                      LEFT JOIN Eater e ON m.meal_id = e.meal_id AND e.eaten = TRUE
             WHERE m.meal_date = #{today}
-        GROUP BY m.meal_id, m.meal_type, m.meal_date
-            ),
-            ranked_meals AS (
-        SELECT *,
-            ROW_NUMBER() OVER (PARTITION BY meal_type ORDER BY eater_count DESC) AS rn
-        FROM meal_counts
-            )
+            GROUP BY m.meal_id, m.meal_type, m.meal_date
+        ),
+             ranked_meals AS (
+                 SELECT *,
+                        ROW_NUMBER() OVER (PARTITION BY meal_type ORDER BY eater_count DESC) AS rn
+                 FROM meal_counts
+             )
         SELECT
             mm.meal_menu_id,
 

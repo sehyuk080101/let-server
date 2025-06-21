@@ -31,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -48,6 +49,8 @@ public class MealMenuServiceImpl implements MealMenuService {
     private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM");
     private static final Pattern ALLERGY_PATTERN = Pattern.compile("\\((\\d+(?:\\.\\d+)*)\\)");
     private static final int MAX_ALLERGY_ID = 19;
+    private static final int ALLERGY_BATCH_SIZE = 500; // MenuAllergy 배치 크기
+    private static final int MENU_BATCH_SIZE = 500;    // Menu 배치 크기
 
     // Meal type mappings
     private static final Map<Integer, String> MEAL_TYPE_MAP = Map.of(
@@ -68,26 +71,30 @@ public class MealMenuServiceImpl implements MealMenuService {
     private String apiKey;
 
 
+    // --- 월 1회 스케줄링되는 급식 데이터 수집 ---
     @Scheduled(cron = "0 0 0 1 * ?")
-    @Transactional
     public void fetchAndSaveMonthlyMeals() {
         log.info("월간 급식 데이터 수집 시작");
-
         LocalDate now = LocalDate.now();
         DateRange dateRange = createDateRange(now);
 
-        MEAL_TYPE_MAP.keySet().forEach(mealType -> {
-            try {
-                fetchAndSaveMealData(dateRange, mealType);
-            } catch (Exception e) {
-                log.error("급식 데이터 수집 중 오류 발생. MealType: {}", mealType, e);
-            }
-        });
-
+        ExecutorService executor = Executors.newFixedThreadPool(MEAL_TYPE_MAP.size());
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        for (Integer mealType : MEAL_TYPE_MAP.keySet()) {
+            futures.add(CompletableFuture.runAsync(() -> {
+                try {
+                    fetchAndSaveMealData(dateRange, mealType);
+                } catch (Exception e) {
+                    log.error("급식 데이터 수집 중 오류 발생. MealType: {}", mealType, e);
+                }
+            }, executor));
+        }
+        // 모든 비동기 작업이 끝날 때까지 대기
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        executor.shutdown();
         log.info("월간 급식 데이터 수집 완료");
     }
 
-    //이 기능 제발 쓰자 ㅜㅜ
     @Override
     public List<MealResponse> getMonthlyMenu(String period, List<Long> allergyIds) {
         String yearMonth = LocalDate.now().format(YEAR_MONTH_FORMATTER);
@@ -107,8 +114,6 @@ public class MealMenuServiceImpl implements MealMenuService {
 
         return groupMealMenusByMeal(mealMenus);
     }
-
-
 
     @Override
     public List<MaxEatersMealWithCountResponse> getMaxEatersPerMealType() {
@@ -222,14 +227,11 @@ public class MealMenuServiceImpl implements MealMenuService {
     private void processMenu(Meal meal, String rawMenu) {
         List<Long> allergyIds = extractAllergyIds(rawMenu);
         String menuName = cleanMenuName(rawMenu);
-
         if (menuName.isEmpty()) {
             return;
         }
-
-        Menu menu = menuService.findByName(menuName)
-                .orElseGet(() -> menuService.save(menuName));
-
+        // 중복 조회 없이 바로 저장 시도 (ON DUPLICATE KEY UPDATE 활용)
+        Menu menu = menuService.save(menuName);
         saveAllergyMappings(menu.getMenuId(), allergyIds);
         saveMealMenuMapping(meal, menu);
     }
@@ -261,7 +263,9 @@ public class MealMenuServiceImpl implements MealMenuService {
     }
 
     private void saveAllergyMappings(Long menuId, List<Long> allergyIds) {
-        allergyIds.forEach(allergyId -> menuAllergyService.save(menuId, allergyId));
+        if (allergyIds != null && !allergyIds.isEmpty()) {
+            menuAllergyService.saveAllBatch(menuId, allergyIds);
+        }
     }
 
     private void saveMealMenuMapping(Meal meal, Menu menu) {
@@ -271,7 +275,6 @@ public class MealMenuServiceImpl implements MealMenuService {
                 .build();
         mealMenuRepository.save(mealMenu);
     }
-
 
     // Record classes for better data modeling
     private record DateRange(String from, String to) {

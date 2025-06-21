@@ -8,12 +8,11 @@ import com.example.let_server.domain.meal.service.MealService;
 import com.example.let_server.domain.menu.domain.Menu;
 import com.example.let_server.domain.menu.service.MenuService;
 import com.example.let_server.domain.menuAllergy.domain.MenuAllergy;
-import com.example.let_server.domain.menuAllergy.mapper.MenuAllergyMapper;
 import com.example.let_server.domain.menuAllergy.repository.MenuAllergyRepository;
 import com.example.let_server.domain.menuAllergy.service.MenuAllergyService;
-import com.example.let_server.global.error.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,5 +43,12 @@ public class MenuAllergyServiceImpl implements MenuAllergyService {
         mealService.getMealById(mealId);
         List<Allergy> allergies = menuAllergyRepository.findAllergyByMealId(mealId);
         return allergies.stream().map(AllergyResponse::of).toList();
+    }
+
+    @Override
+    @Transactional
+    public void saveAllBatch(Long menuId, List<Long> allergyIds) {
+        if (allergyIds == null || allergyIds.isEmpty()) return;
+        menuAllergyRepository.saveAllBatch(menuId, allergyIds);
     }
 }

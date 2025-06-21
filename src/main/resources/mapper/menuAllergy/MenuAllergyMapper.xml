@@ -17,4 +17,12 @@
         WHERE ml.meal_id = #{mealId}
         ORDER BY a.allergy_idx
     </select>
+    <insert id="saveAllBatch">
+        insert into MenuAllergy(menu_id, allergy_idx)
+        values
+        <foreach collection="allergyIds" item="allergyId" separator=",">
+            (#{menuId}, #{allergyId})
+        </foreach>
+        ON DUPLICATE KEY UPDATE menu_id = menu_id
+    </insert>
 </mapper>

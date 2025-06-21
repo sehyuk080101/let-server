@@ -4,8 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.let_server.domain.menu.mapper.MenuMapper">
     <insert id="save" useGeneratedKeys="true" keyProperty="menuId">
-        insert into Menu(menu_id,menu_name,menu_score,like_count,dislike_count,current_rank)
-        values (#{menuId},#{menuName},#{menuScore},#{likeCount},#{dislikeCount},#{currentRank})
+        insert into Menu(menu_name,menu_score,like_count,dislike_count,current_rank)
+        values (#{menuName},#{menuScore},#{likeCount},#{dislikeCount},#{currentRank})
+        ON DUPLICATE KEY UPDATE menu_id = LAST_INSERT_ID(menu_id)
     </insert>
 
     <select id="findByMenuId" resultType="Menu">

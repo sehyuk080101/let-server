@@ -22,4 +22,9 @@ public class MybatisMenuAllergyRepository implements MenuAllergyRepository {
     public List<Allergy> findAllergyByMealId(Long mealId) {
         return menuAllergyMapper.findAllergyByMealId(mealId);
     }
+
+    @Override
+    public void saveAllBatch(Long menuId, List<Long> allergyIds) {
+        menuAllergyMapper.saveAllBatch(menuId, allergyIds);
+    }
 }

@@ -4,7 +4,6 @@ import com.example.let_server.domain.menu.repository.MenuRepository;
 import com.example.let_server.domain.menuRank.dto.response.MenuRankingDto;
 import com.example.let_server.domain.menuRank.repository.MenuRankRepository;
 import com.example.let_server.domain.menuRank.service.MenuRankService;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ public class MenuRankServiceImpl implements MenuRankService {
     private final MenuRankRepository menuRankRepository;
     private final MenuRepository menuRepository;
 
-    @PostConstruct
     @Scheduled(cron = "0 0 0 * * *")
     private void updateMenuScoreByWilson() {
         menuRankRepository.updateMenuScoreByWilson();

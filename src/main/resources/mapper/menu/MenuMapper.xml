@@ -23,4 +23,16 @@
     <select id="findByName" resultType="com.example.let_server.domain.menu.domain.Menu">
         SELECT * FROM Menu WHERE menu_name = #{menuName} LIMIT 1
     </select>
+
+    <update id="increaseLikeCount">
+        UPDATE Menu
+        SET like_count = like_count +1
+        WHERE menu_id = #{menuId}
+    </update>
+
+    <update id="increaseDislikeCount">
+        UPDATE Menu
+        SET dislike_count = dislike_count +1
+        WHERE menu_id = #{menuId}
+    </update>
 </mapper>

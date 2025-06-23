@@ -15,4 +15,8 @@ public interface MenuMapper {
     void updateCurrentRank(@Param("menuId") Long menuId, @Param("rank") int rank);
 
     Optional<Menu> findByName(String menuName);
+
+    void increaseLikeCount(@Param("menuId") Long menuId);
+
+    void increaseDislikeCount(@Param("menuId") Long menuId);
 }

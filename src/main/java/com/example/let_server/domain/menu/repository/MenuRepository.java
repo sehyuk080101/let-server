@@ -13,4 +13,7 @@ public interface MenuRepository {
 
     Optional<Menu> findByName(String menuName);
 
+    void increaseLikeCount(Long menuId);
+
+    void increaseDislikeCount(Long menuId);
 }

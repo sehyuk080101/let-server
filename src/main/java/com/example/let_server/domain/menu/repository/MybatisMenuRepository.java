@@ -30,4 +30,14 @@ public class MybatisMenuRepository implements MenuRepository {
     public Optional<Menu> findByName(String menuName) {
         return menuMapper.findByName(menuName);
     }
+
+    @Override
+    public void increaseLikeCount(Long menuId) {
+        menuMapper.increaseLikeCount(menuId);
+    }
+
+    @Override
+    public void increaseDislikeCount(Long menuId) {
+        menuMapper.increaseDislikeCount(menuId);
+    }
 }

@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface MealRepository {
     Meal save(Meal meal);
-    Optional<Meal> findById(Long mealId);
+    Optional<Meal> findById(Integer mealId);
     Optional<Meal> findByMealTypeAndMealDate(MealType mealType, Date mealDate);
 }

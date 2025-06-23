@@ -20,7 +20,7 @@ public class MybatisMealRepository implements MealRepository {
     }
 
     @Override
-    public Optional<Meal> findById(Long mealId) {
+    public Optional<Meal> findById(Integer mealId) {
         return mealMapper.findById(mealId);
     }
 

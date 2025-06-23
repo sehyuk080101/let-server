@@ -22,7 +22,7 @@ public class MenuAllergyController {
 
     @GetMapping("/{mealId}")
     @Operation(summary = "급식에 따른 알러지 검색")
-    public ResponseEntity<List<AllergyResponse>> getAllergyByMealId(@PathVariable("mealId") Long mealId) {
+    public ResponseEntity<List<AllergyResponse>> getAllergyByMealId(@PathVariable("mealId") Integer mealId) {
         return ResponseEntity.ok(menuAllergyService.getAllergyByMealId(mealId));
     }
 }

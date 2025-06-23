@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface MenuAllergyRepository {
     MenuAllergy save(MenuAllergy menuAllergy);
-    List<Allergy> findAllergyByMealId(Long mealId);
+    List<Allergy> findAllergyByMealId(Integer mealId);
     void saveAllBatch(Long menuId, List<Long> allergyIds);
 }

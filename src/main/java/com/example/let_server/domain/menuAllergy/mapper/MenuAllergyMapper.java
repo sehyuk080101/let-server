@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface MenuAllergyMapper {
     void save(MenuAllergy menuAllergy);
     void saveAllBatch(@Param("menuId") Long menuId, @Param("allergyIds") List<Long> allergyIds);
-    List<Allergy> findAllergyByMealId(Long mealId);
+    List<Allergy> findAllergyByMealId(Integer mealId);
 }

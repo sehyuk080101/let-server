@@ -39,7 +39,7 @@ public class MenuAllergyServiceImpl implements MenuAllergyService {
     }
 
     @Override
-    public List<AllergyResponse> getAllergyByMealId(Long mealId) {
+    public List<AllergyResponse> getAllergyByMealId(Integer mealId) {
         mealService.getMealById(mealId);
         List<Allergy> allergies = menuAllergyRepository.findAllergyByMealId(mealId);
         return allergies.stream().map(AllergyResponse::of).toList();

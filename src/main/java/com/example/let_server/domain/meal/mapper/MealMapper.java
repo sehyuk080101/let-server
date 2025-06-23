@@ -10,6 +10,6 @@ import java.util.Optional;
 @Mapper
 public interface MealMapper {
     void save(Meal meal);
-    Optional<Meal> findById(Long mealId);
+    Optional<Meal> findById(Integer mealId);
     Optional<Meal> findByMealTypeAndMealDate(MealType mealType, Date mealDate);
 }

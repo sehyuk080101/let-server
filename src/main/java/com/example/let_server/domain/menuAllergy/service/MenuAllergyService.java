@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface MenuAllergyService {
     void save(Long menuId, Long allergyId);
-    List<AllergyResponse> getAllergyByMealId(Long mealId);
+    List<AllergyResponse> getAllergyByMealId(Integer mealId);
     void saveAllBatch(Long menuId, List<Long> allergyIds);
 }

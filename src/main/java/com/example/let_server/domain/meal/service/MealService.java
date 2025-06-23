@@ -24,7 +24,7 @@ public class MealService {
         return mealRepository.save(meal);
     }
 
-    public Meal getMealById(Long mealId) {
+    public Meal getMealById(Integer mealId) {
         return mealRepository.findById(mealId)
                 .orElseThrow(()->new CustomException(MealError.MEAL_NOT_FOUND));
     }

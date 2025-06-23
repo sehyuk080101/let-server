@@ -19,7 +19,7 @@ public class MybatisMenuAllergyRepository implements MenuAllergyRepository {
     }
 
     @Override
-    public List<Allergy> findAllergyByMealId(Long mealId) {
+    public List<Allergy> findAllergyByMealId(Integer mealId) {
         return menuAllergyMapper.findAllergyByMealId(mealId);
     }
 

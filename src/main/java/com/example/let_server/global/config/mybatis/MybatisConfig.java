@@ -6,12 +6,16 @@ import com.example.let_server.domain.allergy.repository.MybatisAllergyRepository
 import com.example.let_server.domain.eater.mapper.EaterMapper;
 import com.example.let_server.domain.eater.repository.EaterRepository;
 import com.example.let_server.domain.eater.repository.MybatisEaterRepository;
+import com.example.let_server.domain.meal.domain.Meal;
 import com.example.let_server.domain.meal.mapper.MealMapper;
 import com.example.let_server.domain.meal.repositroy.MealRepository;
 import com.example.let_server.domain.meal.repositroy.MybatisMealRepository;
 import com.example.let_server.domain.mealMenu.mapper.MealMenuMapper;
 import com.example.let_server.domain.mealMenu.repository.MealMenuRepository;
 import com.example.let_server.domain.mealMenu.repository.MybatisMealMenuRepository;
+import com.example.let_server.domain.mealRating.mapper.MealRatingMapper;
+import com.example.let_server.domain.mealRating.repository.MealRatingRepository;
+import com.example.let_server.domain.mealRating.repository.MybatisMealRatingRepository;
 import com.example.let_server.domain.menu.mapper.MenuMapper;
 import com.example.let_server.domain.menu.repository.MenuRepository;
 import com.example.let_server.domain.menu.repository.MybatisMenuRepository;
@@ -40,6 +44,7 @@ public class MybatisConfig {
     private final AllergyMapper allergyMapper;
     private final EaterMapper eaterMapper;
     private final MenuRankMapper menuRankMapper;
+    private final MealRatingMapper mealRatingMapper;
 
     @Bean
     public UserRepository userRepository() {
@@ -79,5 +84,10 @@ public class MybatisConfig {
     @Bean
     public MenuRankRepository menuRankRepository() {
         return new MybatisMenuRankRepository(menuRankMapper);
+    }
+
+    @Bean
+    public MealRatingRepository mealRatingRepository() {
+        return new MybatisMealRatingRepository(mealRatingMapper);
     }
 }

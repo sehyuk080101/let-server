@@ -6,10 +6,9 @@ import com.example.let_server.domain.allergy.repository.MybatisAllergyRepository
 import com.example.let_server.domain.eater.mapper.EaterMapper;
 import com.example.let_server.domain.eater.repository.EaterRepository;
 import com.example.let_server.domain.eater.repository.MybatisEaterRepository;
-import com.example.let_server.domain.meal.domain.Meal;
 import com.example.let_server.domain.meal.mapper.MealMapper;
-import com.example.let_server.domain.meal.repositroy.MealRepository;
-import com.example.let_server.domain.meal.repositroy.MybatisMealRepository;
+import com.example.let_server.domain.meal.repository.MealRepository;
+import com.example.let_server.domain.meal.repository.MybatisMealRepository;
 import com.example.let_server.domain.mealMenu.mapper.MealMenuMapper;
 import com.example.let_server.domain.mealMenu.repository.MealMenuRepository;
 import com.example.let_server.domain.mealMenu.repository.MybatisMealMenuRepository;

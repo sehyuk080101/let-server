@@ -49,8 +49,6 @@ public class MealMenuServiceImpl implements MealMenuService {
     private static final DateTimeFormatter YEAR_MONTH_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM");
     private static final Pattern ALLERGY_PATTERN = Pattern.compile("\\((\\d+(?:\\.\\d+)*)\\)");
     private static final int MAX_ALLERGY_ID = 19;
-    private static final int ALLERGY_BATCH_SIZE = 500; // MenuAllergy 배치 크기
-    private static final int MENU_BATCH_SIZE = 500;    // Menu 배치 크기
 
     // Meal type mappings
     private static final Map<Integer, String> MEAL_TYPE_MAP = Map.of(

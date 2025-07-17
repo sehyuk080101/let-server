@@ -1,4 +1,4 @@
-package com.example.let_server.domain.meal.repositroy;
+package com.example.let_server.domain.meal.repository;
 
 import com.example.let_server.domain.meal.domain.Meal;
 import com.example.let_server.domain.meal.domain.MealType;

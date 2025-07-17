@@ -3,11 +3,11 @@ package com.example.let_server.domain.mealMenu.controller;
 import com.example.let_server.domain.meal.dto.response.MaxEatersMealWithCountResponse;
 import com.example.let_server.domain.meal.dto.response.MealDailyResponse;
 import com.example.let_server.domain.meal.dto.response.MealResponse;
+import com.example.let_server.domain.mealMenu.docs.MealMenuDocs;
 import com.example.let_server.domain.mealMenu.service.MealMenuService;
-import io.swagger.v3.oas.annotations.Operation;
+import com.example.let_server.global.common.BaseResponse;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -19,13 +19,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/mealMenu")
 @RequiredArgsConstructor
-@Tag(name = "mealMenu", description = "급식 관련 API")
-public class MealMenuController {
+public class MealMenuController implements MealMenuDocs {
     private final MealMenuService mealMenuService;
 
     @GetMapping("/{period}")
-    @Operation(summary = "현재 달의 급식 조회")
-    public ResponseEntity<List<MealResponse>> getMonthlyMenu(
+    @Override
+    public ResponseEntity<BaseResponse<List<MealResponse>>> getMonthlyMenu(
             @PathVariable String period,
             @Parameter(
                     description = "알러지 ID 리스트",
@@ -35,20 +34,20 @@ public class MealMenuController {
             )
             @RequestParam(required = false) List<Long> allergyIds
     ) {
-        return ResponseEntity.ok(mealMenuService.getMonthlyMenu(period, allergyIds));
+        return BaseResponse.of(mealMenuService.getMonthlyMenu(period, allergyIds));
     }
 
     @GetMapping("/max-eater")
-    @Operation(summary = "이번달 가장 많은 식사자를 가진 급식(아침/점심/저녁)")
-    public ResponseEntity<List<MaxEatersMealWithCountResponse>> getMaxEatersPerMealType(){
-        return ResponseEntity.ok(mealMenuService.getMaxEatersPerMealType());
+    @Override
+    public ResponseEntity<BaseResponse<List<MaxEatersMealWithCountResponse>>> getMaxEatersPerMealType(){
+        return BaseResponse.of(mealMenuService.getMaxEatersPerMealType());
     }
 
     @GetMapping("/daily/{today}")
-    @Operation(summary = "하루치 급식 조회")
-    public ResponseEntity<List<MealDailyResponse>> getMealDaily(
+    @Override
+    public ResponseEntity<BaseResponse<List<MealDailyResponse>>> getMealDaily(
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date today
             ){
-        return ResponseEntity.ok(mealMenuService.getMealDaily(today));
+        return BaseResponse.of(mealMenuService.getMealDaily(today));
     }
 }

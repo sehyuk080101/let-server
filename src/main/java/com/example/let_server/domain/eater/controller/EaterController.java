@@ -1,10 +1,10 @@
 package com.example.let_server.domain.eater.controller;
 
+import com.example.let_server.domain.eater.docs.EaterDocs;
 import com.example.let_server.domain.eater.dto.response.EaterRatioResponse;
 import com.example.let_server.domain.eater.dto.response.EaterResponse;
 import com.example.let_server.domain.eater.service.EaterService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import com.example.let_server.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,32 +14,31 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/eater")
-@Tag(name = "eater",description = "식사자 관련 API")
-public class EaterController {
+public class EaterController implements EaterDocs {
     private final EaterService eaterService;
 
     @GetMapping("/{grade}")
-    @Operation(summary = "학년별 식사자 조회")
-    public ResponseEntity<List<EaterResponse>> getByGrade(@PathVariable Long grade) {
-        return ResponseEntity.ok(eaterService.findByGrade(grade));
+    @Override
+    public ResponseEntity<BaseResponse<List<EaterResponse>>> getByGrade(@PathVariable Long grade) {
+        return BaseResponse.of(eaterService.findByGrade(grade));
     }
 
     @GetMapping("/meal-rate")
-    @Operation(summary = "학년별 식사자 비율 조회")
-    public ResponseEntity<List<EaterRatioResponse>> getMealRateByGrade(
+    @Override
+    public ResponseEntity<BaseResponse<List<EaterRatioResponse>>> getMealRateByGrade(
             @RequestParam(required = false) String mealType) {
-        return ResponseEntity.ok(eaterService.getEaterRation(mealType));
+        return BaseResponse.of(eaterService.getEaterRation(mealType));
     }
 
     @GetMapping("/not-eaten")
-    @Operation(summary = "현재 식사하지 않은 사람 수 조회")
-    public ResponseEntity<Integer> getNotEaterCount() {
-        return ResponseEntity.ok(eaterService.getNotEaterCount());
+    @Override
+    public ResponseEntity<BaseResponse<Integer>> getNotEaterCount() {
+        return BaseResponse.of(eaterService.getNotEaterCount());
     }
 
     @GetMapping("/month/meal-rate")
-    @Operation(summary = "이번달 식사자 비율 조회")
-    public ResponseEntity<List<EaterRatioResponse>> getMealRateByMonth(){
-        return ResponseEntity.ok(eaterService.getEaterRationMonthly());
+    @Override
+    public ResponseEntity<BaseResponse<List<EaterRatioResponse>>> getMealRateByMonth(){
+        return BaseResponse.of(eaterService.getEaterRationMonthly());
     }
 }

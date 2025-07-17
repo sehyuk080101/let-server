@@ -32,9 +32,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void signup(SignUpRequest request) {
-        if (userRepository.existsByUsername(request.username())) {
-            throw new CustomException(UserError.USERNAME_DUPLICATION);
-        }
+
+        existsByUsername(request.username());
 
         User user = User.builder()
                 .username(request.username())
@@ -45,6 +44,12 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         userRepository.save(user);
+    }
+
+    private void existsByUsername(String username) {
+        if (userRepository.existsByUsername(username)) {
+            throw new CustomException(UserError.USERNAME_DUPLICATION);
+        }
     }
 
     @Override

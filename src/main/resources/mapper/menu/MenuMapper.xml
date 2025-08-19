@@ -35,4 +35,8 @@
         SET dislike_count = dislike_count +1
         WHERE menu_id = #{menuId}
     </update>
+
+    <select id="findAll" resultType="com.example.let_server.domain.menu.domain.Menu">
+        SELECT * FROM Menu
+    </select>
 </mapper>

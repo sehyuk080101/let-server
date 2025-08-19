@@ -4,6 +4,7 @@ import com.example.let_server.domain.menu.domain.Menu;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper
@@ -19,4 +20,6 @@ public interface MenuMapper {
     void increaseLikeCount(@Param("menuId") Long menuId);
 
     void increaseDislikeCount(@Param("menuId") Long menuId);
+
+    List<Menu> findAll();
 }

@@ -4,6 +4,7 @@ import com.example.let_server.domain.menu.domain.Menu;
 import com.example.let_server.domain.menu.mapper.MenuMapper;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -39,5 +40,10 @@ public class MybatisMenuRepository implements MenuRepository {
     @Override
     public void increaseDislikeCount(Long menuId) {
         menuMapper.increaseDislikeCount(menuId);
+    }
+
+    @Override
+    public List<Menu> findAll() {
+        return menuMapper.findAll();
     }
 }

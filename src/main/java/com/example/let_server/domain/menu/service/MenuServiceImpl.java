@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,5 +38,15 @@ public class MenuServiceImpl   implements MenuService {
     @Transactional
     public void increaseDislikeCount(Long menuId) {
         menuRepository.increaseDislikeCount(menuId);
+    }
+
+    @Override
+    public List<Menu> getAllMenus() {
+        return menuRepository.findAll();
+    }
+
+    @Override
+    public Menu getMenuById(Long menuId) {
+        return findByMenuId(menuId);
     }
 }

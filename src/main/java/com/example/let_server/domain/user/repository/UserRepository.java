@@ -3,6 +3,7 @@ package com.example.let_server.domain.user.repository;
 import com.example.let_server.domain.user.domain.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserRepository {
@@ -13,4 +14,8 @@ public interface UserRepository {
     Boolean existsByUsername(String username);
 
     List<User> findAll();
+
+    Long count();
+
+    Map<Integer, Long> countByGrade();
 }

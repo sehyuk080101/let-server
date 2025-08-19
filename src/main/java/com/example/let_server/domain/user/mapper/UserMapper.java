@@ -4,6 +4,7 @@ import com.example.let_server.domain.user.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Mapper
@@ -15,4 +16,8 @@ public interface UserMapper {
     boolean existsByUsername(String username);
 
     List<User> findAll();
+
+    Long count();
+
+    List<Map<String, Object>> countByGrade();
 }

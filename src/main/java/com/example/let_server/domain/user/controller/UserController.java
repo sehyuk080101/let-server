@@ -21,4 +21,18 @@ public class UserController implements UserDocs {
     public ResponseEntity<BaseResponse<UserInfoResponse>> getMe(){
         return BaseResponse.of(userService.getMe());
     }
+
+    @GetMapping("/count")
+    @Override
+    public ResponseEntity<BaseResponse<Long>> getTotalUserCount() {
+        Long totalCount = userService.getTotalUserCount();
+        return BaseResponse.of(totalCount);
+    }
+
+    @GetMapping("/count/by-grade")
+    @Override
+    public ResponseEntity<BaseResponse<java.util.Map<Integer, Long>>> getUserCountByGrade() {
+        java.util.Map<Integer, Long> countByGrade = userService.getUserCountByGrade();
+        return BaseResponse.of(countByGrade);
+    }
 }

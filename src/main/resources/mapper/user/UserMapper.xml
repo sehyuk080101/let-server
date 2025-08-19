@@ -24,4 +24,23 @@
         select user_id, username, password, student_id, real_name, role
         from User
     </select>
+
+    <select id="count" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM User
+    </select>
+
+    <select id="countByGrade" resultType="java.util.Map">
+        SELECT g.grade, COALESCE(u.count, 0) AS count
+        FROM (
+            SELECT 1 AS grade
+            UNION ALL SELECT 2
+            UNION ALL SELECT 3
+            ) g
+            LEFT JOIN (
+            SELECT student_id DIV 1000 AS grade, COUNT(*) AS count
+            FROM User
+            GROUP BY student_id DIV 1000
+            ) u ON g.grade = u.grade
+        ORDER BY g.grade
+    </select>
 </mapper>

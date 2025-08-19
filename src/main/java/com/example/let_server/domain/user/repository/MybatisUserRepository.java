@@ -5,6 +5,7 @@ import com.example.let_server.domain.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -32,5 +33,20 @@ public class MybatisUserRepository implements UserRepository {
     @Override
     public List<User> findAll() {
         return userMapper.findAll();
+    }
+
+    @Override
+    public Long count() {
+        return userMapper.count();
+    }
+
+    @Override
+    public Map<Integer, Long> countByGrade() {
+        List<Map<String, Object>> results = userMapper.countByGrade();
+        return results.stream()
+                .collect(java.util.stream.Collectors.toMap(
+                    row -> ((Number) row.get("grade")).intValue(),
+                    row -> ((Number) row.get("count")).longValue()
+                ));
     }
 }

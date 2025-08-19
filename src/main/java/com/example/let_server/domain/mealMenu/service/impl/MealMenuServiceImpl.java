@@ -19,6 +19,7 @@ import com.example.let_server.global.error.CustomException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,18 +94,19 @@ public class MealMenuServiceImpl implements MealMenuService {
         log.info("월간 급식 데이터 수집 완료");
     }
 
-    @Override
     public List<MealResponse> getMonthlyMenu(String period, List<Long> allergyIds) {
         String yearMonth = LocalDate.now().format(YEAR_MONTH_FORMATTER);
-
         MealType mealType = parseMealTypeOrThrow(period);
+
+        // allergyIds null 처리
+        List<Long> safeAllergyIds = Optional.ofNullable(allergyIds).orElse(Collections.emptyList());
 
         Map<String, Object> params = new HashMap<>();
         params.put("yearMonth", yearMonth);
-        params.put("mealType", mealType); // MealType enum의 name 값
-        params.put("allergyList", allergyIds); // 알러지 ID 리스트
+        params.put("mealType", mealType);
+        params.put("allergyList", safeAllergyIds);
 
-        for (Long allergyId : allergyIds){
+        for (Long allergyId : safeAllergyIds) {
             allergyService.findByAllergyId(allergyId);
         }
 

@@ -5,10 +5,13 @@ import com.example.let_server.domain.eater.dto.response.EaterRatioResponse;
 import com.example.let_server.domain.eater.mapper.EaterMapper;
 import com.example.let_server.domain.meal.domain.MealType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+@Repository
 @RequiredArgsConstructor
 public class MybatisEaterRepository implements EaterRepository {
     private final EaterMapper eaterMapper;
@@ -37,5 +40,25 @@ public class MybatisEaterRepository implements EaterRepository {
     @Override
     public List<EaterRatioResponse> getEaterRationMonthly(MealType mealType,int year,int month) {
         return eaterMapper.getEaterRationMonthly(mealType,year,month);
+    }
+
+    @Override
+    public List<EaterRatioResponse> getAllEaterRationMonthly(int year, int month) {
+        return eaterMapper.getAllEaterRationMonthly(year, month);
+    }
+
+    @Override
+    public Optional<Eater> findByUserIdAndMealId(Long userId, Integer mealId) {
+        return eaterMapper.findByUserIdAndMealId(userId, mealId);
+    }
+
+    @Override
+    public Double getMonthlyParticipationRate(int year, int month) {
+        return eaterMapper.getMonthlyParticipationRate(year, month);
+    }
+
+    @Override
+    public Double getMonthlyTotalCaloriesConsumed(int year, int month) {
+        return eaterMapper.getMonthlyTotalCaloriesConsumed(year, month);
     }
 }

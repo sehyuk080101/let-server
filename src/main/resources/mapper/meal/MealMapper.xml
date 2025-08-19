@@ -20,4 +20,67 @@
         WHERE meal_type = #{mealType} AND meal_date = #{mealDate}
     </select>
 
+    <select id="findByMealDate" resultType="Meal">
+        SELECT meal_id,meal_date,meal_type,score,calorie
+        FROM Meal
+        WHERE DATE(meal_date) = DATE(#{mealDate})
+        ORDER BY FIELD(meal_type, '조식', '중식', '석식')
+    </select>
+
+    <select id="countByYearAndMonth" resultType="java.lang.Long">
+        SELECT COUNT(*)
+        FROM Meal
+        WHERE YEAR(meal_date) = #{year} AND MONTH(meal_date) = #{month}
+    </select>
+
+    <select id="sumCaloriesByYearAndMonth" resultType="java.lang.Double">
+        SELECT COALESCE(SUM(calorie), 0.0)
+        FROM Meal
+        WHERE YEAR(meal_date) = #{year} AND MONTH(meal_date) = #{month}
+    </select>
+
+    <!-- 급식별 상세 통계 조회 -->
+    <select id="getMealStatistics" resultType="com.example.let_server.domain.statistics.dto.response.MealStatistics">
+        SELECT 
+            m.meal_id as mealId,
+            m.meal_date as date,
+            m.meal_type as mealType,
+            COALESCE(GROUP_CONCAT(DISTINCT menu.menu_name SEPARATOR ', '), '메뉴 정보 없음') as menuName,
+            COUNT(DISTINCT u.user_id) as totalStudents,
+            COUNT(DISTINCT CASE WHEN e.eaten = true THEN e.user_id END) as eatenCount,
+            ROUND((COUNT(DISTINCT CASE WHEN e.eaten = true THEN e.user_id END) * 100.0 / COUNT(DISTINCT u.user_id)), 2) as participationRate,
+            AVG(r.rating) as averageRating,
+            m.calorie as calorie
+        FROM Meal m
+        CROSS JOIN User u
+        LEFT JOIN Eater e ON e.meal_id = m.meal_id AND e.user_id = u.user_id
+        LEFT JOIN MealRating r ON r.meal_id = m.meal_id
+        LEFT JOIN MealMenu mm ON mm.meal_id = m.meal_id
+        LEFT JOIN Menu menu ON menu.menu_id = mm.menu_id
+        WHERE m.meal_id = #{mealId}
+        GROUP BY m.meal_id, m.meal_date, m.meal_type, m.calorie
+    </select>
+
+    <!-- 저참여율 급식 조회 -->
+    <select id="findLowParticipationMeals" resultType="com.example.let_server.domain.statistics.dto.response.LowParticipationMeal">
+        SELECT 
+            m.meal_id as mealId,
+            DATE(m.meal_date) as date,
+            m.meal_type as mealType,
+            COALESCE(GROUP_CONCAT(DISTINCT menu.menu_name SEPARATOR ', '), '메뉴 정보 없음') as menuName,
+            COUNT(DISTINCT u.user_id) as totalStudents,
+            COUNT(DISTINCT CASE WHEN e.eaten = true THEN e.user_id END) as eatenCount,
+            ROUND((COUNT(DISTINCT CASE WHEN e.eaten = true THEN e.user_id END) * 100.0 / COUNT(DISTINCT u.user_id)), 2) as participationRate
+        FROM Meal m
+        CROSS JOIN User u
+        LEFT JOIN Eater e ON e.meal_id = m.meal_id AND e.user_id = u.user_id
+        LEFT JOIN MealMenu mm ON mm.meal_id = m.meal_id
+        LEFT JOIN Menu menu ON menu.menu_id = mm.menu_id
+        WHERE 
+            DATE_FORMAT(m.meal_date, '%Y-%m') = #{period}
+        GROUP BY m.meal_id, m.meal_date, m.meal_type
+        HAVING participationRate &lt; #{threshold}
+        ORDER BY participationRate ASC
+    </select>
+
 </mapper>

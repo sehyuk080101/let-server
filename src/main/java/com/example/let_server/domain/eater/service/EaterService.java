@@ -2,7 +2,9 @@ package com.example.let_server.domain.eater.service;
 
 import com.example.let_server.domain.eater.dto.response.EaterRatioResponse;
 import com.example.let_server.domain.eater.dto.response.EaterResponse;
+import com.example.let_server.domain.eater.dto.response.UserCalorieResponse;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface EaterService {
@@ -10,4 +12,8 @@ public interface EaterService {
     List<EaterRatioResponse> getEaterRation(String mealType);
     Integer getNotEaterCount();
     List<EaterRatioResponse> getEaterRationMonthly();
+    List<EaterRatioResponse> getAllEaterRationMonthly();
+    UserCalorieResponse getUserCalorieIntake(Long userId, LocalDate date);
+    Double getMonthlyParticipationRate(int year, int month);
+    Double getMonthlyTotalCaloriesConsumed(int year, int month);
 }

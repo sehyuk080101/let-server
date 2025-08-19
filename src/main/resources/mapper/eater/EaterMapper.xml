@@ -87,6 +87,59 @@
         LEFT JOIN User u ON e.user_id = u.user_id
         WHERE MONTH(m.meal_date) = #{month} AND YEAR(m.meal_date) = #{year} AND m.meal_type = #{mealType}
         GROUP BY base.meal_type
+    </select>
+
+    <!-- 모든 급식 타입별 월별 참여율 조회 -->
+    <select id="getAllEaterRationMonthly" resultType="com.example.let_server.domain.eater.dto.response.EaterRatioResponse">
+        SELECT
+        base.meal_type,
+        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 THEN 1 ELSE 0 END), 0), 0), 0) AS grade1Ration,
+        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 THEN 1 ELSE 0 END), 0), 0), 0) AS grade2Ration,
+        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 THEN 1 ELSE 0 END), 0), 0), 0) AS grade3Ration
+        FROM (
+        SELECT '조식' AS meal_type
+        UNION ALL SELECT '중식'
+        UNION ALL SELECT '석식'
+        ) base
+        LEFT JOIN Meal m ON base.meal_type = m.meal_type
+        LEFT JOIN Eater e ON m.meal_id = e.meal_id
+        LEFT JOIN User u ON e.user_id = u.user_id
+        WHERE MONTH(m.meal_date) = #{month} AND YEAR(m.meal_date) = #{year}
+        GROUP BY base.meal_type
         ORDER BY FIELD(base.meal_type, '조식', '중식', '석식')
+    </select>
+
+    <select id="findByUserIdAndMealId" resultMap="EaterResponseMap">
+        SELECT 
+            e.eater_id AS eater_id,
+            e.eaten AS eaten,
+            u.user_id AS user_id,
+            u.student_id AS student_id,
+            u.real_name AS real_name
+        FROM Eater e
+        JOIN User u ON e.user_id = u.user_id
+        WHERE e.user_id = #{userId} AND e.meal_id = #{mealId}
+    </select>
+
+    <select id="getMonthlyParticipationRate" resultType="java.lang.Double">
+        SELECT COALESCE(
+            ROUND(
+                (SUM(CASE WHEN e.eaten = true THEN 1 ELSE 0 END) * 100.0) / 
+                NULLIF(COUNT(*), 0), 2
+            ), 0.0
+        ) AS participationRate
+        FROM Eater e
+        JOIN Meal m ON e.meal_id = m.meal_id
+        WHERE YEAR(m.meal_date) = #{year} AND MONTH(m.meal_date) = #{month}
+    </select>
+
+    <select id="getMonthlyTotalCaloriesConsumed" resultType="java.lang.Double">
+        SELECT COALESCE(SUM(CASE WHEN e.eaten = true THEN m.calorie ELSE 0 END), 0.0)
+        FROM Eater e
+        JOIN Meal m ON e.meal_id = m.meal_id
+        WHERE YEAR(m.meal_date) = #{year} AND MONTH(m.meal_date) = #{month}
     </select>
 </mapper>

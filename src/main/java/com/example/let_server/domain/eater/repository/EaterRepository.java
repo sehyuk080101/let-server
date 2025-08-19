@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface EaterRepository {
     Eater save(Eater eater);
@@ -14,4 +15,8 @@ public interface EaterRepository {
     List<EaterRatioResponse> getEaterRation(String mealType, Date mealDate);
     Integer getNotEaterCount(MealType mealType, Date mealDate);
     List<EaterRatioResponse> getEaterRationMonthly(MealType mealType, int year,int month);
+    List<EaterRatioResponse> getAllEaterRationMonthly(int year, int month);
+    Optional<Eater> findByUserIdAndMealId(@Param("userId") Long userId, @Param("mealId") Integer mealId);
+    Double getMonthlyParticipationRate(int year, int month);
+    Double getMonthlyTotalCaloriesConsumed(int year, int month);
 }

@@ -3,6 +3,7 @@ package com.example.let_server.domain.eater.service.impl;
 import com.example.let_server.domain.eater.domain.Eater;
 import com.example.let_server.domain.eater.dto.response.EaterRatioResponse;
 import com.example.let_server.domain.eater.dto.response.EaterResponse;
+import com.example.let_server.domain.eater.dto.response.UserCalorieResponse;
 import com.example.let_server.domain.eater.error.EaterError;
 import com.example.let_server.domain.eater.repository.EaterRepository;
 import com.example.let_server.domain.eater.service.EaterService;
@@ -19,8 +20,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -92,5 +95,53 @@ public class EaterServiceImpl implements EaterService {
         int month = now.getMonthValue();
         MealType currentMealType = getCurrentMealType();
         return eaterRepository.getEaterRationMonthly(currentMealType,year,month);
+    }
+
+    @Override
+    public List<EaterRatioResponse> getAllEaterRationMonthly() {
+        LocalDate now = LocalDate.now();
+        int year = now.getYear();
+        int month = now.getMonthValue();
+        return eaterRepository.getAllEaterRationMonthly(year, month);
+    }
+
+    @Override
+    public UserCalorieResponse getUserCalorieIntake(Long userId, LocalDate date) {
+        Date dateForQuery = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        
+        List<Meal> mealsForDate = mealService.getMealsByDate(dateForQuery);
+        List<UserCalorieResponse.MealCalorieInfo> mealCalorieInfos = new ArrayList<>();
+        double totalCalories = 0.0;
+        
+        for (Meal meal : mealsForDate) {
+            Optional<Eater> eaterOpt = eaterRepository.findByUserIdAndMealId(userId, meal.getMealId());
+            boolean eaten = eaterOpt.isPresent() && eaterOpt.get().isEaten();
+            double mealCalories = eaten ? meal.getCalorie() : 0.0;
+            
+            mealCalorieInfos.add(UserCalorieResponse.MealCalorieInfo.builder()
+                    .mealType(meal.getMealType().name())
+                    .calories(mealCalories)
+                    .eaten(eaten)
+                    .build());
+                    
+            totalCalories += mealCalories;
+        }
+        
+        return UserCalorieResponse.builder()
+                .userId(userId)
+                .date(date)
+                .totalCalorieIntake(totalCalories)
+                .meals(mealCalorieInfos)
+                .build();
+    }
+
+    @Override
+    public Double getMonthlyParticipationRate(int year, int month) {
+        return eaterRepository.getMonthlyParticipationRate(year, month);
+    }
+
+    @Override
+    public Double getMonthlyTotalCaloriesConsumed(int year, int month) {
+        return eaterRepository.getMonthlyTotalCaloriesConsumed(year, month);
     }
 }

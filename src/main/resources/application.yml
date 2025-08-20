@@ -16,7 +16,7 @@ spring:
       port: ${PORT}
   sql:
     init:
-      mode: always
+      mode: embedded
       schema-locations: classpath:sql/schema.sql
 
 jwt:

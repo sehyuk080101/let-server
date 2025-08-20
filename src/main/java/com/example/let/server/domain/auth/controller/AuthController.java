@@ -37,7 +37,7 @@ public class AuthController {
     )
     public ResponseEntity<BaseResponse<Jwt>> login(@RequestBody LoginRequest request) {
 
-        return BaseResponse.of(authService.login(request), 201);
+        return BaseResponse.of(authService.login(request), 200);
     }
 
     @PostMapping("/reissue")
@@ -45,6 +45,6 @@ public class AuthController {
             summary = "토큰 재발급"
     )
     public ResponseEntity<BaseResponse<Jwt>> reissue(@RequestBody ReissueRequest request) {
-        return BaseResponse.of(authService.reissue(request), 201);
+        return BaseResponse.of(authService.reissue(request), 200);
     }
 }

@@ -25,7 +25,7 @@ jwt:
   refresh-token-expiration: 4380000000
 
 mybatis:
-  type-aliases-package: com.example.let_server.domain
+  type-aliases-package: com.example.let.server.domain
   configuration:
     map-underscore-to-camel-case: true
     default-executor-type: BATCH
@@ -34,6 +34,6 @@ mybatis:
 
 logging:
   level:
-    com.example.let_server.domain.mealMenu.service.impl.MealMenuServiceImpl: INFO
+    com.example.let.server.domain.mealmenu.service.impl.MealMenuServiceImpl: INFO
     org.springframework.jdbc.core: WARN
     org.springframework.transaction: WARN

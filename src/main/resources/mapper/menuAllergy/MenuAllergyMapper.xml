@@ -2,23 +2,25 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.let_server.domain.menuAllergy.mapper.MenuAllergyMapper">
-    <insert id="save" parameterType="com.example.let_server.domain.menuAllergy.domain.MenuAllergy">
-        INSERT INTO MenuAllergy(menu_id, allergy_idx)
-        VALUES (#{menu.menuId}, #{allergy.allergyId})
-            ON DUPLICATE KEY UPDATE menu_id = menu_id; </insert>
+<mapper namespace="com.example.let.server.domain.menuallergy.mapper.MenuAllergyMapper">
+    <insert id="save" parameterType="com.example.let.server.domain.menuallergy.domain.MenuAllergy">
+        INSERT INTO menu_allergies(menu_id, allergy_idx)
+        VALUES (#{menu.menuId}, #{allergy.allergyId}) ON DUPLICATE KEY
+        UPDATE menu_id = menu_id; </insert>
+
     <select id="findAllergyByMealId" resultType="Allergy">
         SELECT DISTINCT a.allergy_idx as allergy_id, a.allergy_name
-        FROM MenuAllergy ma
-                 JOIN Menu m ON m.menu_id = ma.menu_id
-                 JOIN Allergy a ON ma.allergy_idx = a.allergy_idx
-                 JOIN MealMenu mm ON mm.menu_id = m.menu_id
-                 JOIN Meal ml ON ml.meal_id = mm.meal_id
+        FROM menu_allergies ma
+                 JOIN menus m ON m.menu_id = ma.menu_id
+                 JOIN allergies a ON ma.allergy_idx = a.allergy_idx
+                 JOIN meal_menus mm ON mm.menu_id = m.menu_id
+                 JOIN meals ml ON ml.meal_id = mm.meal_id
         WHERE ml.meal_id = #{mealId}
         ORDER BY a.allergy_idx
     </select>
+
     <insert id="saveAllBatch">
-        insert into MenuAllergy(menu_id, allergy_idx)
+        insert into menu_allergies(menu_id, allergy_idx)
         values
         <foreach collection="allergyIds" item="allergyId" separator=",">
             (#{menuId}, #{allergyId})

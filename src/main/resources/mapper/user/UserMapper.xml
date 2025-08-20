@@ -2,31 +2,32 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.let_server.domain.user.mapper.UserMapper">
-    <insert id="save" useGeneratedKeys = "true" keyProperty="userId">
-        insert into User(user_id, username, password, student_id, real_name, role)
+<mapper namespace="com.example.let.server.domain.user.mapper.UserMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="userId">
+        insert into users(user_id, username, password, student_id, real_name, role)
         values (#{userId}, #{username}, #{password}, #{studentId}, #{realName}, #{role})
     </insert>
 
     <select id="findByUsername" resultType="User">
         select user_id, username, password, student_id, real_name, role
-        from User
+        from users
         where username = #{username}
     </select>
 
     <select id="existsByUsername" resultType="boolean">
         select count(*) > 0
-        from User
+        from users
         where username = #{username}
     </select>
 
     <select id="findAll" resultType="User">
         select user_id, username, password, student_id, real_name, role
-        from User
+        from users
     </select>
 
     <select id="count" resultType="java.lang.Long">
-        SELECT COUNT(*) FROM User
+        SELECT COUNT(*)
+        FROM users
     </select>
 
     <select id="countByGrade" resultType="java.util.Map">
@@ -37,10 +38,11 @@
             UNION ALL SELECT 3
             ) g
             LEFT JOIN (
-            SELECT student_id DIV 1000 AS grade, COUNT(*) AS count
-            FROM User
+            SELECT student_id DIV 1000 AS grade, COUNT (*) AS count
+            FROM users
             GROUP BY student_id DIV 1000
-            ) u ON g.grade = u.grade
+            ) u
+        ON g.grade = u.grade
         ORDER BY g.grade
     </select>
 </mapper>

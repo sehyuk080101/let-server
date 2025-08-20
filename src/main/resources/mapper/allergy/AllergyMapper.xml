@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.let_server.domain.allergy.mapper.AllergyMapper">
+<mapper namespace="com.example.let.server.domain.allergy.mapper.AllergyMapper">
     <select id="findByAllergyId" resultType="Allergy">
-        select allergy_idx as allergy_id ,allergy_name
-        from Allergy
+        select allergy_idx as allergy_id, allergy_name
+        from allergies
         where allergy_idx = #{allergyId}
     </select>
 </mapper>

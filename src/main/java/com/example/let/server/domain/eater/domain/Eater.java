@@ -1,0 +1,19 @@
+package com.example.let.server.domain.eater.domain;
+
+import com.example.let.server.domain.meal.domain.Meal;
+import com.example.let.server.domain.user.domain.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class Eater {
+    private Long eaterId;
+    private User user;
+    private Meal meal;
+    private boolean eaten;
+}

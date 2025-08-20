@@ -2,19 +2,23 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.let_server.domain.mealRating.mapper.MealRatingMapper">
+<mapper namespace="com.example.let.server.domain.mealrating.mapper.MealRatingMapper">
     <insert id="save" useGeneratedKeys="true" keyProperty="mealRatingId">
-        insert into MealRating(meal_rating_id,meal_id,rating)
-        values (#{mealRatingId},#{meal.mealId},#{rating})
+        insert into meal_ratings(meal_rating_id, meal_id, rating)
+        values (#{mealRatingId}, #{meal.mealId}, #{rating})
     </insert>
 
-    <select id="findByMealId" resultType="com.example.let_server.domain.mealRating.domain.MealRating">
-        SELECT * FROM MealRating WHERE meal_id = #{mealId}
+    <select id="findByMealId" resultType="com.example.let.server.domain.mealrating.domain.MealRating">
+        SELECT *
+        FROM meal_ratings
+        WHERE meal_id = #{mealId}
     </select>
 
     <select id="getMonthlyAverageRating" resultType="java.lang.Double">
-        SELECT AVG(rating) FROM MealRating mr 
-        JOIN Meal m ON mr.meal_id = m.meal_id 
-        WHERE YEAR(m.meal_date) = #{year} AND MONTH(m.meal_date) = #{month}
+        SELECT AVG(rating)
+        FROM meal_ratings mr
+                 JOIN meals m ON mr.meal_id = m.meal_id
+        WHERE YEAR (m.meal_date) = #{year}
+          AND MONTH (m.meal_date) = #{month}
     </select>
 </mapper>

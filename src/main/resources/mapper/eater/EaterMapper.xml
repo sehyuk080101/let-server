@@ -2,20 +2,20 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.let_server.domain.eater.mapper.EaterMapper">
+<mapper namespace="com.example.let.server.domain.eater.mapper.EaterMapper">
 
-    <resultMap id="EaterResponseMap" type="com.example.let_server.domain.eater.domain.Eater">
+    <resultMap id="EaterResponseMap" type="com.example.let.server.domain.eater.domain.Eater">
         <id property="eaterId" column="eater_id"/>
         <result property="eaten" column="eaten"/>
-        <association property="user" javaType="com.example.let_server.domain.user.domain.User">
+        <association property="user" javaType="com.example.let.server.domain.user.domain.User">
             <id property="userId" column="user_id"/>
             <result property="studentId" column="student_id"/>
             <result property="realName" column="real_name"/>
         </association>
     </resultMap>
 
-    <insert id="insertEater" useGeneratedKeys = "true" keyProperty="eaterId">
-        insert into Eater(eater_id,user_id,meal_id,eaten)
+    <insert id="insertEater" useGeneratedKeys="true" keyProperty="eaterId">
+        insert into eaters(eater_id, user_id, meal_id, eaten)
         values (#{eaterId}, #{user.userId}, #{meal.mealId}, #{eaten})
     </insert>
 
@@ -23,18 +23,18 @@
         <bind name="lowerBound" value="_parameter * 1000"/>
         <bind name="upperBound" value="(_parameter + 1) * 1000"/>
         SELECT
-            e.eater_id AS eater_id,
-            e.eaten AS eaten,
-            u.user_id AS user_id,
-            u.student_id AS student_id,
-            u.real_name AS real_name
-        FROM Eater e
-                 JOIN User u ON e.user_id = u.user_id
+        e.eater_id AS eater_id,
+        e.eaten AS eaten,
+        u.user_id AS user_id,
+        u.student_id AS student_id,
+        u.real_name AS real_name
+        FROM eaters e
+        JOIN users u ON e.user_id = u.user_id
         WHERE u.student_id &gt;= #{lowerBound}
         AND u.student_id &lt; #{upperBound}
     </select>
 
-    <select id="getEaterRation" resultType="com.example.let_server.domain.eater.dto.response.EaterRatioResponse">
+    <select id="getEaterRation" resultType="com.example.let.server.domain.eater.dto.response.EaterRatioResponse">
         SELECT
         base.meal_type,
         IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
@@ -48,9 +48,9 @@
         UNION ALL SELECT '중식'
         UNION ALL SELECT '석식'
         ) base
-        LEFT JOIN Meal m ON base.meal_type = m.meal_type
-        LEFT JOIN Eater e ON m.meal_id = e.meal_id
-        LEFT JOIN User u ON e.user_id = u.user_id
+        LEFT JOIN meals m ON base.meal_type = m.meal_type
+        LEFT JOIN eaters e ON m.meal_id = e.meal_id
+        LEFT JOIN users u ON e.user_id = u.user_id
         WHERE DATE(m.meal_date) = #{mealDate}
         <if test="mealType != null">
             AND m.meal_type = #{mealType}
@@ -61,85 +61,95 @@
 
     <select id="getNotEaterCount" resultType="int">
         SELECT COUNT(*)
-        FROM Eater e
-                 JOIN Meal m ON e.meal_id = m.meal_id
+        FROM eaters e
+                 JOIN meals m ON e.meal_id = m.meal_id
         WHERE m.meal_type = #{mealType}
-          AND DATE(m.meal_date) = #{mealDate}
+          AND DATE (m.meal_date) = #{mealDate}
           AND e.eaten = FALSE
     </select>
 
-    <select id="getEaterRationMonthly" resultType="com.example.let_server.domain.eater.dto.response.EaterRatioResponse">
-        SELECT
-        base.meal_type,
-        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
-        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 THEN 1 ELSE 0 END), 0), 0), 0) AS grade1Ration,
-        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
-        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 THEN 1 ELSE 0 END), 0), 0), 0) AS grade2Ration,
-        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
-        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 THEN 1 ELSE 0 END), 0), 0), 0) AS grade3Ration
-        FROM (
-        SELECT '조식' AS meal_type
-        UNION ALL SELECT '중식'
-        UNION ALL SELECT '석식'
-        ) base
-        LEFT JOIN Meal m ON base.meal_type = m.meal_type
-        LEFT JOIN Eater e ON m.meal_id = e.meal_id
-        LEFT JOIN User u ON e.user_id = u.user_id
-        WHERE MONTH(m.meal_date) = #{month} AND YEAR(m.meal_date) = #{year} AND m.meal_type = #{mealType}
+    <select id="getEaterRationMonthly" resultType="com.example.let.server.domain.eater.dto.response.EaterRatioResponse">
+        SELECT base.meal_type,
+               IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+                            NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 THEN 1 ELSE 0 END), 0), 0),
+                      0)                                                                                       AS grade1Ration,
+               IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+                            NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 THEN 1 ELSE 0 END), 0), 0),
+                      0)                                                                                       AS grade2Ration,
+               IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+                            NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 THEN 1 ELSE 0 END), 0), 0),
+                      0)                                                                                       AS grade3Ration
+        FROM (SELECT '조식' AS meal_type
+              UNION ALL
+              SELECT '중식'
+              UNION ALL
+              SELECT '석식') base
+                 LEFT JOIN meals m ON base.meal_type = m.meal_type
+                 LEFT JOIN eaters e ON m.meal_id = e.meal_id
+                 LEFT JOIN users u ON e.user_id = u.user_id
+        WHERE MONTH (m.meal_date) = #{month}
+          AND YEAR (m.meal_date) = #{year}
+          AND m.meal_type = #{mealType}
         GROUP BY base.meal_type
     </select>
 
     <!-- 모든 급식 타입별 월별 참여율 조회 -->
-    <select id="getAllEaterRationMonthly" resultType="com.example.let_server.domain.eater.dto.response.EaterRatioResponse">
-        SELECT
-        base.meal_type,
-        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
-        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 THEN 1 ELSE 0 END), 0), 0), 0) AS grade1Ration,
-        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
-        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 THEN 1 ELSE 0 END), 0), 0), 0) AS grade2Ration,
-        IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
-        NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 THEN 1 ELSE 0 END), 0), 0), 0) AS grade3Ration
-        FROM (
-        SELECT '조식' AS meal_type
-        UNION ALL SELECT '중식'
-        UNION ALL SELECT '석식'
-        ) base
-        LEFT JOIN Meal m ON base.meal_type = m.meal_type
-        LEFT JOIN Eater e ON m.meal_id = e.meal_id
-        LEFT JOIN User u ON e.user_id = u.user_id
-        WHERE MONTH(m.meal_date) = #{month} AND YEAR(m.meal_date) = #{year}
+    <select id="getAllEaterRationMonthly"
+            resultType="com.example.let.server.domain.eater.dto.response.EaterRatioResponse">
+        SELECT base.meal_type,
+               IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+                            NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 1 THEN 1 ELSE 0 END), 0), 0),
+                      0)                                                                                       AS grade1Ration,
+               IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+                            NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 2 THEN 1 ELSE 0 END), 0), 0),
+                      0)                                                                                       AS grade2Ration,
+               IFNULL(ROUND(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 AND e.eaten THEN 1 ELSE 0 END) * 100.0 /
+                            NULLIF(SUM(CASE WHEN FLOOR(u.student_id / 1000) = 3 THEN 1 ELSE 0 END), 0), 0),
+                      0)                                                                                       AS grade3Ration
+        FROM (SELECT '조식' AS meal_type
+              UNION ALL
+              SELECT '중식'
+              UNION ALL
+              SELECT '석식') base
+                 LEFT JOIN meals m ON base.meal_type = m.meal_type
+                 LEFT JOIN eaters e ON m.meal_id = e.meal_id
+                 LEFT JOIN users u ON e.user_id = u.user_id
+        WHERE MONTH (m.meal_date) = #{month}
+          AND YEAR (m.meal_date) = #{year}
         GROUP BY base.meal_type
         ORDER BY FIELD(base.meal_type, '조식', '중식', '석식')
     </select>
 
     <select id="findByUserIdAndMealId" resultMap="EaterResponseMap">
-        SELECT 
-            e.eater_id AS eater_id,
-            e.eaten AS eaten,
-            u.user_id AS user_id,
-            u.student_id AS student_id,
-            u.real_name AS real_name
-        FROM Eater e
-        JOIN User u ON e.user_id = u.user_id
-        WHERE e.user_id = #{userId} AND e.meal_id = #{mealId}
+        SELECT e.eater_id   AS eater_id,
+               e.eaten      AS eaten,
+               u.user_id    AS user_id,
+               u.student_id AS student_id,
+               u.real_name  AS real_name
+        FROM eaters e
+                 JOIN users u ON e.user_id = u.user_id
+        WHERE e.user_id = #{userId}
+          AND e.meal_id = #{mealId}
     </select>
 
     <select id="getMonthlyParticipationRate" resultType="java.lang.Double">
         SELECT COALESCE(
-            ROUND(
-                (SUM(CASE WHEN e.eaten = true THEN 1 ELSE 0 END) * 100.0) / 
-                NULLIF(COUNT(*), 0), 2
-            ), 0.0
-        ) AS participationRate
-        FROM Eater e
-        JOIN Meal m ON e.meal_id = m.meal_id
-        WHERE YEAR(m.meal_date) = #{year} AND MONTH(m.meal_date) = #{month}
+                       ROUND(
+                               (SUM(CASE WHEN e.eaten = true THEN 1 ELSE 0 END) * 100.0) /
+                               NULLIF(COUNT(*), 0), 2
+                       ), 0.0
+               ) AS participationRate
+        FROM eaters e
+                 JOIN meals m ON e.meal_id = m.meal_id
+        WHERE YEAR (m.meal_date) = #{year}
+          AND MONTH (m.meal_date) = #{month}
     </select>
 
     <select id="getMonthlyTotalCaloriesConsumed" resultType="java.lang.Double">
         SELECT COALESCE(SUM(CASE WHEN e.eaten = true THEN m.calorie ELSE 0 END), 0.0)
-        FROM Eater e
-        JOIN Meal m ON e.meal_id = m.meal_id
-        WHERE YEAR(m.meal_date) = #{year} AND MONTH(m.meal_date) = #{month}
+        FROM eaters e
+                 JOIN meals m ON e.meal_id = m.meal_id
+        WHERE YEAR (m.meal_date) = #{year}
+          AND MONTH (m.meal_date) = #{month}
     </select>
 </mapper>

@@ -1,9 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.let_server.domain.menuRank.mapper.MenuRankMapper">
+<mapper namespace="com.example.let.server.domain.menurank.mapper.MenuRankMapper">
 
-    <resultMap id="MenuRankingResultMap" type="com.example.let_server.domain.menuRank.dto.response.MenuRankingDto">
+    <resultMap id="MenuRankingResultMap" type="com.example.let.server.domain.menurank.dto.response.MenuRankingDto">
         <result property="menuId" column="menu_id"/>
         <result property="menuName" column="menu_name"/>
         <result property="menuScore" column="menu_score"/>
@@ -11,7 +12,7 @@
     </resultMap>
 
     <update id="updateMenuScoreByWilson">
-        UPDATE Menu
+        UPDATE menus
         SET menu_score = (
             CASE
                 WHEN like_count + dislike_count = 0 THEN 0
@@ -30,18 +31,19 @@
 
     <select id="findAllOrderByScoreDesc" resultMap="MenuRankingResultMap">
         SELECT menu_id, menu_name, menu_score, current_rank
-        FROM Menu
+        FROM menus
         ORDER BY menu_score DESC
     </select>
 
     <insert id="saveMenuRankHistory">
-        INSERT INTO MenuRankHistory (menu_id, date, rank, rank_diff)
+        INSERT INTO menu_rank_histories (menu_id, date, rank, rank_diff)
         VALUES (#{menuId}, #{date}, #{rank}, #{rankDiff})
     </insert>
 
     <select id="getRankDiff" resultType="int">
         select rank_diff
-        from MenuRankHistory as mr
-        where menu_id = #{menuId} AND mr.date = #{date}
+        from menu_rank_histories as mr
+        where menu_id = #{menuId}
+          AND mr.date = #{date}
     </select>
 </mapper>

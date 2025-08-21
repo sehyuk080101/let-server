@@ -10,6 +10,8 @@ import java.util.List;
 @Mapper
 public interface MenuAllergyMapper {
     void save(MenuAllergy menuAllergy);
+
     void saveAllBatch(@Param("menuId") Long menuId, @Param("allergyIds") List<Long> allergyIds);
+
     List<Allergy> findAllergyByMealId(Integer mealId);
 }

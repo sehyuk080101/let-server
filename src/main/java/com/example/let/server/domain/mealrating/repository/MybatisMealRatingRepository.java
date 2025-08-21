@@ -9,6 +9,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MybatisMealRatingRepository implements MealRatingRepository {
     private final MealRatingMapper mealRatingMapper;
+
     @Override
     public MealRating save(MealRating mealRating) {
         mealRatingMapper.save(mealRating);

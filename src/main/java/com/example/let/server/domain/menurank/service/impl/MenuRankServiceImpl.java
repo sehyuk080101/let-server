@@ -1,7 +1,7 @@
 package com.example.let.server.domain.menurank.service.impl;
 
 import com.example.let.server.domain.menu.repository.MenuRepository;
-import com.example.let.server.domain.menurank.dto.response.MenuRankingDto;
+import com.example.let.server.domain.menurank.dto.response.MenuRankingResponse;
 import com.example.let.server.domain.menurank.repository.MenuRankRepository;
 import com.example.let.server.domain.menurank.service.MenuRankService;
 import lombok.RequiredArgsConstructor;
@@ -16,17 +16,16 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class MenuRankServiceImpl implements MenuRankService {
-
     private final MenuRankRepository menuRankRepository;
     private final MenuRepository menuRepository;
 
     @Scheduled(cron = "0 0 0 * * *")
     private void updateMenuScoreByWilson() {
         menuRankRepository.updateMenuScoreByWilson();
-        List<MenuRankingDto> rankedMenus = getMenuRankings();
+        List<MenuRankingResponse> rankedMenus = getMenuRankings();
 
         for (int i = 0; i < rankedMenus.size(); i++) {
-            MenuRankingDto dto = rankedMenus.get(i);
+            MenuRankingResponse dto = rankedMenus.get(i);
             int newRank = i + 1;
             int oldRank = dto.getCurrentRank() != null ? dto.getCurrentRank() : newRank;
 
@@ -41,7 +40,7 @@ public class MenuRankServiceImpl implements MenuRankService {
                 Date today = getToday();
                 menuRankRepository.saveMenuRankHistory(dto.getMenuId(), today, newRank, rankDiff);
 
-        }
+            }
         }
     }
 
@@ -50,7 +49,7 @@ public class MenuRankServiceImpl implements MenuRankService {
     }
 
     @Override
-    public List<MenuRankingDto> getMenuRankings() {
+    public List<MenuRankingResponse> getMenuRankings() {
         return menuRankRepository.findAllOrderByScoreDesc();
     }
 

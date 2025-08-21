@@ -11,7 +11,7 @@ import com.example.let.server.domain.user.domain.UserRole;
 import com.example.let.server.domain.user.error.UserError;
 import com.example.let.server.domain.user.repository.UserRepository;
 import com.example.let.server.global.error.CustomException;
-import com.example.let.server.global.security.jwt.dto.Jwt;
+import com.example.let.server.domain.auth.dto.response.JwtResponse;
 import com.example.let.server.global.security.jwt.enums.JwtType;
 import com.example.let.server.global.security.jwt.error.JwtError;
 import com.example.let.server.global.security.jwt.provider.JwtProvider;
@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
@@ -54,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional(readOnly = true)
-    public Jwt login(LoginRequest request) {
+    public JwtResponse login(LoginRequest request) {
         String username = request.username();
         String password = request.password();
 
@@ -69,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Jwt reissue(ReissueRequest request) {
+    public JwtResponse reissue(ReissueRequest request) {
         String refreshToken = request.refreshToken();
 
         if (jwtProvider.getType(refreshToken) != JwtType.REFRESH)

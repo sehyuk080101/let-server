@@ -9,11 +9,18 @@ import java.util.List;
 
 public interface EaterService {
     List<EaterResponse> findByGrade(Long grade);
+
     List<EaterRatioResponse> getEaterRation(String mealType);
+
     Integer getNotEaterCount();
+
     List<EaterRatioResponse> getEaterRationMonthly();
+
     List<EaterRatioResponse> getAllEaterRationMonthly();
+
     UserCalorieResponse getUserCalorieIntake(Long userId, LocalDate date);
+
     Double getMonthlyParticipationRate(int year, int month);
+
     Double getMonthlyTotalCaloriesConsumed(int year, int month);
 }

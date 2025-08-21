@@ -19,7 +19,6 @@ import java.util.List;
 
 @Tag(name = "eater", description = "식사자 관련 API")
 public interface EaterDocs {
-
     @Operation(summary = "학년별 식사자 조회", description = "특정 학년의 식사자 목록을 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "식사자 조회 성공"),

@@ -10,8 +10,10 @@ import java.util.Map;
 
 public interface MealMenuRepository {
     MealMenu save(MealMenu mealMenu);
-    List<MealMenu> findMonthlyMealMenu(Map<String, Object> params);
-    List<MaxEatersMealWithCountResponse> findMaxEatersPerMealType(int year, int month);
-    List<MealDailyResponse> findMealDaily(Date today);
 
+    List<MealMenu> findMonthlyMealMenu(Map<String, Object> params);
+
+    List<MaxEatersMealWithCountResponse> findMaxEatersPerMealType(int year, int month);
+
+    List<MealDailyResponse> findMealDaily(Date today);
 }

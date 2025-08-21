@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.let.server.domain.menurank.mapper.MenuRankMapper">
 
-    <resultMap id="MenuRankingResultMap" type="com.example.let.server.domain.menurank.dto.response.MenuRankingDto">
+    <resultMap id="MenuRankingResultMap" type="com.example.let.server.domain.menurank.dto.response.MenuRankingResponse">
         <result property="menuId" column="menu_id"/>
         <result property="menuName" column="menu_name"/>
         <result property="menuScore" column="menu_score"/>

@@ -1,11 +1,11 @@
 package com.example.let.server.domain.statistics.dto.response;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+@Getter
 @Builder
 public class LowParticipationAnalysis {
     private Integer threshold;

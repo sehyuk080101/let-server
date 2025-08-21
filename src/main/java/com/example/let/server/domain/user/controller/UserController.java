@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -18,7 +20,7 @@ public class UserController implements UserDocs {
 
     @GetMapping("/me")
     @Override
-    public ResponseEntity<BaseResponse<UserInfoResponse>> getMe(){
+    public ResponseEntity<BaseResponse<UserInfoResponse>> getMe() {
         return BaseResponse.of(userService.getMe());
     }
 
@@ -31,8 +33,8 @@ public class UserController implements UserDocs {
 
     @GetMapping("/count/by-grade")
     @Override
-    public ResponseEntity<BaseResponse<java.util.Map<Integer, Long>>> getUserCountByGrade() {
-        java.util.Map<Integer, Long> countByGrade = userService.getUserCountByGrade();
+    public ResponseEntity<BaseResponse<Map<Integer, Long>>> getUserCountByGrade() {
+        Map<Integer, Long> countByGrade = userService.getUserCountByGrade();
         return BaseResponse.of(countByGrade);
     }
 }

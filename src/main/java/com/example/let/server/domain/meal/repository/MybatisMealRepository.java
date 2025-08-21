@@ -15,7 +15,6 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class MybatisMealRepository implements MealRepository {
-
     private final MealMapper mealMapper;
 
     @Override

@@ -1,12 +1,12 @@
 package com.example.let.server.domain.eater.dto.response;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Data
+@Getter
 @Builder
 public class UserCalorieResponse {
     private Long userId;
@@ -14,7 +14,7 @@ public class UserCalorieResponse {
     private double totalCalorieIntake;
     private List<MealCalorieInfo> meals;
 
-    @Data
+    @Getter
     @Builder
     public static class MealCalorieInfo {
         private String mealType;

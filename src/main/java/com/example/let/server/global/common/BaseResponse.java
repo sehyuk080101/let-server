@@ -1,5 +1,6 @@
 package com.example.let.server.global.common;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public record BaseResponse<T>(
@@ -7,7 +8,7 @@ public record BaseResponse<T>(
         int status,
         String message
 ) {
-    private static final int DEFAULT_SUCCESS_STATUS = 200;
+    private static final int DEFAULT_SUCCESS_STATUS = HttpStatus.OK.value();
     private static final String DEFAULT_MESSAGE = "";
 
     public static <T> ResponseEntity<BaseResponse<T>> of(T data) {

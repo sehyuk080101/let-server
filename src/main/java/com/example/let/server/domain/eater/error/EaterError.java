@@ -3,11 +3,12 @@ package com.example.let.server.domain.eater.error;
 import com.example.let.server.global.error.CustomError;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
 public enum EaterError implements CustomError {
-    INVALID_GRADE(400, "Invalid grade value. Grade must be 1~3.");
+    INVALID_GRADE(HttpStatus.BAD_REQUEST.value(), "Invalid grade value. Grade must be 1~3.");
 
     private final int status;
     private final String message;

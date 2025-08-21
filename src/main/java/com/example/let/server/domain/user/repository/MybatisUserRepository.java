@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class MybatisUserRepository implements UserRepository {
-
     private final UserMapper userMapper;
 
     @Override

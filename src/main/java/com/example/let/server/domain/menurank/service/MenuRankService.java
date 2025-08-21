@@ -1,10 +1,11 @@
 package com.example.let.server.domain.menurank.service;
 
-import com.example.let.server.domain.menurank.dto.response.MenuRankingDto;
+import com.example.let.server.domain.menurank.dto.response.MenuRankingResponse;
 
 import java.util.List;
 
 public interface MenuRankService {
-    List<MenuRankingDto> getMenuRankings();
+    List<MenuRankingResponse> getMenuRankings();
+
     Integer getRankDiff(Long menuId);
 }

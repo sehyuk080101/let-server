@@ -10,7 +10,6 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class MybatisExerciseRepository implements ExerciseRepository {
-
     private final ExerciseMapper exerciseMapper;
 
     @Override

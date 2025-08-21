@@ -14,7 +14,6 @@ import java.util.List;
 
 @Tag(name = "menu", description = "메뉴 관련 API")
 public interface MenuDocs {
-    
     @Operation(summary = "메뉴 좋아요", description = "특정 메뉴의 좋아요 수를 1 증가시킵니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "좋아요 증가 성공"),
@@ -55,4 +54,3 @@ public interface MenuDocs {
             @PathVariable("menuId") Long menuId
     );
 }
-

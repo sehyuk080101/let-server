@@ -1,14 +1,14 @@
 package com.example.let.server.global.security.jwt.config;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter
-@Setter
+@RequiredArgsConstructor
 @ConfigurationProperties(prefix = "jwt")
 public class JwtProperties {
-    private String secretKey;
-    private long accessTokenExpiration;
-    private long refreshTokenExpiration;
+    private final String secretKey;
+    private final long accessTokenExpiration;
+    private final long refreshTokenExpiration;
 }

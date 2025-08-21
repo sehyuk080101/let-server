@@ -3,16 +3,13 @@ package com.example.let.server.domain.meal.dto.response;
 import com.example.let.server.domain.meal.domain.Meal;
 import com.example.let.server.domain.meal.domain.MealType;
 import com.example.let.server.domain.menu.dto.response.MenuResponse;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

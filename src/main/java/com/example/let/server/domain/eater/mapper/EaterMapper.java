@@ -13,12 +13,20 @@ import java.util.Optional;
 @Mapper
 public interface EaterMapper {
     void insertEater(Eater eater);
+
     List<Eater> findByGrade(Long grade);
+
     List<EaterRatioResponse> getEaterRation(@Param("mealType") String mealType,@Param("mealDate") Date mealDate);
+
     Integer getNotEaterCount(@Param("mealType") MealType mealType, @Param("mealDate") Date mealDate);
+
     List<EaterRatioResponse> getEaterRationMonthly(@Param("mealType") MealType mealType,@Param("year") int year,@Param("month") int month);
+
     List<EaterRatioResponse> getAllEaterRationMonthly(@Param("year") int year, @Param("month") int month);
+
     Optional<Eater> findByUserIdAndMealId(@Param("userId") Long userId, @Param("mealId") Integer mealId);
+
     Double getMonthlyParticipationRate(@Param("year") int year, @Param("month") int month);
+
     Double getMonthlyTotalCaloriesConsumed(@Param("year") int year, @Param("month") int month);
 }

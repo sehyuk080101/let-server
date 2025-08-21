@@ -3,10 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.let_server.domain.allergy.mapper.AllergyUserMapper">
+<mapper namespace="com.example.let.server.domain.allergy.mapper.AllergyUserMapper">
 
     <insert id="insertAllergyUser" parameterType="AllergyUser" useGeneratedKeys="true" keyProperty="allergyUserId">
-        insert into AllergyUser (allergy_idx, user_id)
+        insert into allergy_users (allergy_idx, user_id)
         values (#{allergy.allergyId}, #{user.userId})
     </insert>
 

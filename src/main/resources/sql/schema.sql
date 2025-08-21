@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `allergy_users` (
                                              allergy_user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
                                              allergy_idx BIGINT NOT NULL,
                                              user_id BIGINT NOT NULL,
-                                             FOREIGN KEY (`allergy_idx`) REFERENCES `allergies` (`allergy_idx`) ON DELETE CASCADE,
+                                             FOREIGN KEY (`allergy_idx`) REFERENCES `Allergy` (`allergy_idx`) ON DELETE CASCADE,
     FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE
     );
 

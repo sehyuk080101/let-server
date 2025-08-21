@@ -10,7 +10,7 @@
     </select>
     <select id="findByAllergyName" parameterType="string" resultType="Allergy">
         select allergy_idx as allergy_id, allergy_name
-        from Allergy
+        from allergies
         where allergy_name = #{allergyName}
         limit 1
     </select>

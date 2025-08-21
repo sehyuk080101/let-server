@@ -54,9 +54,9 @@ public class AuthServiceImpl implements AuthService {
                 .studentId(request.studentId())
                 .build();
 
-        registerAllergy(request.allergies(), user);
-
         userRepository.save(user);
+
+        registerAllergy(request.allergies(), user);
     }
 
     private void existsByUsername(String username) {

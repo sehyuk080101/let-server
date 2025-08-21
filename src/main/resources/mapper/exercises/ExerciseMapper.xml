@@ -3,10 +3,10 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.let_server.domain.exercises.mapper.ExerciseMapper">
+<mapper namespace="com.example.let.server.domain.exercises.mapper.ExerciseMapper">
 
     <!-- 운동 결과 매핑 -->
-    <resultMap id="ExerciseResultMap" type="com.example.let_server.domain.exercises.domain.Exercises">
+    <resultMap id="ExerciseResultMap" type="com.example.let.server.domain.exercises.domain.Exercises">
         <id property="id" column="id"/>
         <result property="category" column="category"/>
         <result property="duration" column="duration"/>
@@ -17,14 +17,13 @@
 
     <!-- 모든 운동 조회 -->
     <select id="findAll" resultMap="ExerciseResultMap">
-        SELECT 
-            id,
-            category,
-            duration,
-            title,
-            description,
-            method
-        FROM Exercises
+        SELECT id,
+               category,
+               duration,
+               title,
+               description,
+               method
+        FROM exercises
         ORDER BY id
     </select>
 

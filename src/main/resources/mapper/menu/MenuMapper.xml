@@ -2,41 +2,41 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.let_server.domain.menu.mapper.MenuMapper">
+<mapper namespace="com.example.let.server.domain.menu.mapper.MenuMapper">
     <insert id="save" useGeneratedKeys="true" keyProperty="menuId">
-        insert into Menu(menu_name,menu_score,like_count,dislike_count,current_rank)
-        values (#{menuName},#{menuScore},#{likeCount},#{dislikeCount},#{currentRank})
-        ON DUPLICATE KEY UPDATE menu_id = LAST_INSERT_ID(menu_id)
+        insert into menus(menu_name, menu_score, like_count, dislike_count, current_rank)
+        values (#{menuName}, #{menuScore}, #{likeCount}, #{dislikeCount}, #{currentRank}) ON DUPLICATE KEY
+        UPDATE menu_id = LAST_INSERT_ID(menu_id)
     </insert>
 
     <select id="findByMenuId" resultType="Menu">
         select menu_id,menu_name,menu_score,like_count,dislike_count,current_rank
-        from Menu
+        from menus
         where menu_id = #{menuId}
     </select>
 
     <update id="updateCurrentRank">
-        update Menu set current_rank = #{rank}
+        update menus set current_rank = #{rank}
         where menu_id = #{menuId}
     </update>
 
-    <select id="findByName" resultType="com.example.let_server.domain.menu.domain.Menu">
-        SELECT * FROM Menu WHERE menu_name = #{menuName} LIMIT 1
+    <select id="findByName" resultType="com.example.let.server.domain.menu.domain.Menu">
+        SELECT * FROM menus WHERE menu_name = #{menuName} LIMIT 1
     </select>
 
     <update id="increaseLikeCount">
-        UPDATE Menu
+        UPDATE menus
         SET like_count = like_count +1
         WHERE menu_id = #{menuId}
     </update>
 
     <update id="increaseDislikeCount">
-        UPDATE Menu
+        UPDATE menus
         SET dislike_count = dislike_count +1
         WHERE menu_id = #{menuId}
     </update>
 
-    <select id="findAll" resultType="com.example.let_server.domain.menu.domain.Menu">
-        SELECT * FROM Menu
+    <select id="findAll" resultType="com.example.let.server.domain.menu.domain.Menu">
+        SELECT * FROM menus
     </select>
 </mapper>

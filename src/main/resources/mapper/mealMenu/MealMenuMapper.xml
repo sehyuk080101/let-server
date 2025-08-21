@@ -2,36 +2,37 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.let_server.domain.mealMenu.mapper.MealMenuMapper">
-    <resultMap id="MaxEaterMealResponseMap" type="com.example.let_server.domain.meal.dto.response.MaxEatersMealWithCountResponse">
+<mapper namespace="com.example.let.server.domain.mealmenu.mapper.MealMenuMapper">
+    <resultMap id="MaxEaterMealResponseMap"
+               type="com.example.let.server.domain.meal.dto.response.MaxEatersMealWithCountResponse">
         <id property="mealId" column="meal_id"/>
         <result property="mealDate" column="meal_date"/>
         <result property="mealType" column="meal_type"/>
         <result property="calorie" column="calorie"/>
         <result property="eaterCount" column="eater_count"/>
 
-        <collection property="menus" ofType="com.example.let_server.domain.menu.dto.MenuResponse">
+        <collection property="menus" ofType="com.example.let.server.domain.menu.dto.response.MenuResponse">
             <id property="menuId" column="menu_id"/>
             <result property="menuName" column="menu_name"/>
         </collection>
     </resultMap>
 
-    <resultMap id="MealDailyMap" type="com.example.let_server.domain.meal.dto.response.MealDailyResponse">
+    <resultMap id="MealDailyMap" type="com.example.let.server.domain.meal.dto.response.MealDailyResponse">
         <id property="mealId" column="meal_id"/>
         <result property="mealDate" column="meal_date"/>
         <result property="mealType" column="meal_type"/>
         <result property="calorie" column="calorie"/>
 
-        <collection property="menus" ofType="com.example.let_server.domain.menu.dto.MenuResponse">
+        <collection property="menus" ofType="com.example.let.server.domain.menu.dto.response.MenuResponse">
             <id property="menuId" column="menu_id"/>
             <result property="menuName" column="menu_name"/>
         </collection>
     </resultMap>
 
-    <resultMap id="MealMenuMap" type="com.example.let_server.domain.mealMenu.domain.MealMenu">
+    <resultMap id="MealMenuMap" type="com.example.let.server.domain.mealmenu.domain.MealMenu">
         <id property="mealMenuId" column="meal_menu_id"/>
 
-        <association property="menu" javaType="com.example.let_server.domain.menu.domain.Menu">
+        <association property="menu" javaType="com.example.let.server.domain.menu.domain.Menu">
             <id property="menuId" column="menu_id"/>
             <result property="menuName" column="menu_name"/>
             <result property="menuScore" column="menu_score"/>
@@ -40,7 +41,7 @@
             <result property="currentRank" column="current_rank"/>
         </association>
 
-        <association property="meal" javaType="com.example.let_server.domain.meal.domain.Meal">
+        <association property="meal" javaType="com.example.let.server.domain.meal.domain.Meal">
             <id property="mealId" column="meal_id"/>
             <result property="mealDate" column="meal_date"/>
             <result property="mealType" column="meal_type"/> <!-- enum이라면 TypeHandler 설정 필요 -->
@@ -50,8 +51,8 @@
     </resultMap>
 
     <insert id="save" useGeneratedKeys="true" keyProperty="mealMenuId">
-        insert into MealMenu(meal_menu_id,menu_id,meal_id)
-        values (#{mealMenuId},#{menu.menuId},#{meal.mealId})
+        insert into meal_menus(meal_menu_id, menu_id, meal_id)
+        values (#{mealMenuId}, #{menu.menuId}, #{meal.mealId})
     </insert>
 
 
@@ -69,11 +70,11 @@
         ml.meal_type AS meal_type,
         ml.calorie AS calorie,
         ml.score AS score
-        FROM MealMenu mm
-        JOIN Menu m ON mm.menu_id = m.menu_id
-        JOIN Meal ml ON mm.meal_id = ml.meal_id
-        JOIN MenuAllergy ma ON m.menu_id = ma.menu_id
-        JOIN Allergy a ON ma.allergy_idx = a.allergy_idx
+        FROM meal_menus mm
+        JOIN menus m ON mm.menu_id = m.menu_id
+        JOIN meals ml ON mm.meal_id = ml.meal_id
+        JOIN menu_allergies ma ON m.menu_id = ma.menu_id
+        JOIN allergies a ON ma.allergy_idx = a.allergy_idx
         WHERE DATE_FORMAT(ml.meal_date, '%Y-%m') = #{yearMonth}
         AND ml.meal_type = #{mealType}
 
@@ -89,88 +90,78 @@
     </select>
 
     <select id="findMaxEatersPerMealType" resultMap="MaxEaterMealResponseMap">
-        WITH meal_counts AS (
-            SELECT
-                m.meal_id,
-                m.meal_type,
-                m.meal_date,
-                COUNT(DISTINCT e.user_id) AS eater_count
-            FROM Meal m
-                     LEFT JOIN Eater e ON m.meal_id = e.meal_id AND e.eaten = TRUE
-            WHERE MONTH(m.meal_date) = #{month}
-            AND YEAR(m.meal_date) = #{year}
+        WITH meal_counts AS (SELECT m.meal_id,
+                                    m.meal_type,
+                                    m.meal_date,
+                                    COUNT(DISTINCT e.user_id) AS eater_count
+                             FROM meals m
+                                      LEFT JOIN eaters e ON m.meal_id = e.meal_id AND e.eaten = TRUE
+                             WHERE MONTH (m.meal_date) = #{month}
+            AND YEAR (m.meal_date) = #{year}
         GROUP BY m.meal_id, m.meal_type, m.meal_date
             ),
             ranked_meals AS (
-        SELECT *,
-            ROW_NUMBER() OVER (PARTITION BY meal_type ORDER BY eater_count DESC) AS rn
+        SELECT *, ROW_NUMBER() OVER (PARTITION BY meal_type ORDER BY eater_count DESC) AS rn
         FROM meal_counts
             )
-        SELECT
-            mm.meal_menu_id,
+        SELECT mm.meal_menu_id,
 
-            m.menu_id,
-            m.menu_name,
-            m.menu_score,
-            m.like_count,
-            m.dislike_count,
-            m.current_rank,
+               m.menu_id,
+               m.menu_name,
+               m.menu_score,
+               m.like_count,
+               m.dislike_count,
+               m.current_rank,
 
-            ml.meal_id,
-            ml.meal_date,
-            ml.meal_type,
-            ml.calorie,
-            ml.score,
+               ml.meal_id,
+               ml.meal_date,
+               ml.meal_type,
+               ml.calorie,
+               ml.score,
 
-            r.eater_count AS eater_count
+               r.eater_count AS eater_count
 
         FROM ranked_meals r
-                 JOIN Meal ml ON r.meal_id = ml.meal_id
-                 JOIN MealMenu mm ON mm.meal_id = ml.meal_id
-                 JOIN Menu m ON mm.menu_id = m.menu_id
+                 JOIN meals ml ON r.meal_id = ml.meal_id
+                 JOIN meal_menus mm ON mm.meal_id = ml.meal_id
+                 JOIN menus m ON mm.menu_id = m.menu_id
         WHERE r.rn = 1
         ORDER BY FIELD(ml.meal_type, '조식', '중식', '석식')
     </select>
 
     <select id="findMealDaily" resultMap="MealDailyMap">
-        WITH meal_counts AS (
-            SELECT
-                m.meal_id,
-                m.meal_type,
-                m.meal_date,
-                COUNT(DISTINCT e.user_id) AS eater_count
-            FROM Meal m
-                     LEFT JOIN Eater e ON m.meal_id = e.meal_id AND e.eaten = TRUE
-            WHERE m.meal_date = #{today}
-            GROUP BY m.meal_id, m.meal_type, m.meal_date
-        ),
-             ranked_meals AS (
-                 SELECT *,
-                        ROW_NUMBER() OVER (PARTITION BY meal_type ORDER BY eater_count DESC) AS rn
-                 FROM meal_counts
-             )
-        SELECT
-            mm.meal_menu_id,
+        WITH meal_counts AS (SELECT m.meal_id,
+                                    m.meal_type,
+                                    m.meal_date,
+                                    COUNT(DISTINCT e.user_id) AS eater_count
+                             FROM meals m
+                                      LEFT JOIN eaters e ON m.meal_id = e.meal_id AND e.eaten = TRUE
+                             WHERE m.meal_date = #{today}
+                             GROUP BY m.meal_id, m.meal_type, m.meal_date),
+             ranked_meals AS (SELECT *,
+                                     ROW_NUMBER() OVER (PARTITION BY meal_type ORDER BY eater_count DESC) AS rn
+                              FROM meal_counts)
+        SELECT mm.meal_menu_id,
 
-            m.menu_id,
-            m.menu_name,
-            m.menu_score,
-            m.like_count,
-            m.dislike_count,
-            m.current_rank,
+               m.menu_id,
+               m.menu_name,
+               m.menu_score,
+               m.like_count,
+               m.dislike_count,
+               m.current_rank,
 
-            ml.meal_id,
-            ml.meal_date,
-            ml.meal_type,
-            ml.calorie,
-            ml.score,
+               ml.meal_id,
+               ml.meal_date,
+               ml.meal_type,
+               ml.calorie,
+               ml.score,
 
-            r.eater_count AS eater_count
+               r.eater_count AS eater_count
 
         FROM ranked_meals r
-                 JOIN Meal ml ON r.meal_id = ml.meal_id
-                 JOIN MealMenu mm ON mm.meal_id = ml.meal_id
-                 JOIN Menu m ON mm.menu_id = m.menu_id
+                 JOIN meals ml ON r.meal_id = ml.meal_id
+                 JOIN meal_menus mm ON mm.meal_id = ml.meal_id
+                 JOIN menus m ON mm.menu_id = m.menu_id
         WHERE r.rn = 1
         ORDER BY FIELD(ml.meal_type, '조식', '중식', '석식')
     </select>

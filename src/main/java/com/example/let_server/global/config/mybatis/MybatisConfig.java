@@ -1,8 +1,11 @@
 package com.example.let_server.global.config.mybatis;
 
 import com.example.let_server.domain.allergy.mapper.AllergyMapper;
+import com.example.let_server.domain.allergy.mapper.AllergyUserMapper;
 import com.example.let_server.domain.allergy.repository.AllergyRepository;
+import com.example.let_server.domain.allergy.repository.AllergyUserRepository;
 import com.example.let_server.domain.allergy.repository.MybatisAllergyRepository;
+import com.example.let_server.domain.allergy.repository.MybatisAllergyUserRepository;
 import com.example.let_server.domain.eater.mapper.EaterMapper;
 import com.example.let_server.domain.eater.repository.EaterRepository;
 import com.example.let_server.domain.eater.repository.MybatisEaterRepository;
@@ -48,6 +51,7 @@ public class MybatisConfig {
     private final MenuRankMapper menuRankMapper;
     private final MealRatingMapper mealRatingMapper;
     private final ExerciseMapper exerciseMapper;
+    private final AllergyUserMapper allergyUserMapper;
 
     @Bean
     public UserRepository userRepository() {
@@ -95,6 +99,8 @@ public class MybatisConfig {
     }
 
     @Bean
-    public ExerciseRepository exerciseRepository() {return new MybatisExerciseRepository(exerciseMapper);
-    }
+    public ExerciseRepository exerciseRepository() { return new MybatisExerciseRepository(exerciseMapper); }
+
+    @Bean
+    public AllergyUserRepository allergyUserRepository() { return new MybatisAllergyUserRepository(allergyUserMapper); }
 }

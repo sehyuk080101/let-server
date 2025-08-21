@@ -8,4 +8,18 @@
         from Allergy
         where allergy_idx = #{allergyId}
     </select>
+    <select id="findByAllergyName" parameterType="string" resultType="Allergy">
+        select allergy_idx as allergy_id, allergy_name
+        from Allergy
+        where allergy_name = #{allergyName}
+    </select>
+    <select id="existsByAllergyName" parameterType="string" resultType="boolean">
+        select case when count(*) > 0 then true else false end
+        from Allergy
+        where allergy_name = #{allergyName}
+    </select>
+    <insert id="save" parameterType="Allergy" useGeneratedKeys="true" keyProperty="allergyId">
+        insert into Allergy (allergy_name)
+        values (#{allergyName})
+    </insert>
 </mapper>

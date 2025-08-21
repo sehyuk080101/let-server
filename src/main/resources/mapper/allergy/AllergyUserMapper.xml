@@ -6,7 +6,7 @@
 <mapper namespace="com.example.let_server.domain.allergy.mapper.AllergyUserMapper">
 
     <insert id="insertAllergyUser" parameterType="AllergyUser" useGeneratedKeys="true" keyProperty="allergyUserId">
-        insert into Allergy_User (allergy_id, user_id)
+        insert into AllergyUser (allergy_idx, user_id)
         values (#{allergy.allergyId}, #{user.userId})
     </insert>
 

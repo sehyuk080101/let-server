@@ -17,10 +17,4 @@ public class MybatisAllergyRepository implements AllergyRepository {
 
     @Override
     public Optional<Allergy> findByAllergyName(String allergyName) { return allergyMapper.findByAllergyName(allergyName); }
-
-    @Override
-    public boolean existsByAllergyName(String allergyName) { return allergyMapper.existsByAllergyName(allergyName); }
-
-    @Override
-    public void save(Allergy allergy) { allergyMapper.save(allergy); }
 }

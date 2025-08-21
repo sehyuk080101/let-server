@@ -1,5 +1,9 @@
 package com.example.let.server.domain.auth.service.impl;
 
+import com.example.let.server.domain.allergy.domain.Allergy;
+import com.example.let.server.domain.allergy.domain.AllergyUser;
+import com.example.let.server.domain.allergy.repository.AllergyRepository;
+import com.example.let.server.domain.allergy.repository.AllergyUserRepository;
 import com.example.let.server.domain.auth.dto.request.LoginRequest;
 import com.example.let.server.domain.auth.dto.request.ReissueRequest;
 import com.example.let.server.domain.auth.dto.request.SignUpRequest;
@@ -20,19 +24,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final AllergyRepository allergyRepository;
+    private final AllergyUserRepository allergyUserRepository;
 
     @Override
     @Transactional
     public void signup(SignUpRequest request) {
 
         existsByUsername(request.username());
+
 
         User user = User.builder()
                 .username(request.username())
@@ -42,6 +53,8 @@ public class AuthServiceImpl implements AuthService {
                 .studentId(request.studentId())
                 .build();
 
+        registerAllergy(request.allergies(), user);
+
         userRepository.save(user);
     }
 
@@ -49,6 +62,29 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.existsByUsername(username)) {
             throw new CustomException(UserError.USERNAME_DUPLICATION);
         }
+    }
+
+    private void registerAllergy(List<String> allergies, User user) {
+        allergies.forEach(item -> {
+            Allergy allergy = allergyRepository.findByAllergyName(item).orElse(createNewAllergy(item));
+            AllergyUser allergyUser = AllergyUser
+                    .builder()
+                    .allergy(allergy)
+                    .user(user)
+                    .build();
+
+            allergyUserRepository.insertAllergyUser(allergyUser);
+        });
+    }
+
+    private Allergy createNewAllergy(String allergyName) {
+        Allergy newAllergy = Allergy.builder()
+                .allergyName(allergyName)
+                .build();
+
+        allergyRepository.save(newAllergy);
+
+        return newAllergy;
     }
 
     @Override

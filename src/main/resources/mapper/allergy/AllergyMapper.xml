@@ -14,13 +14,4 @@
         where allergy_name = #{allergyName}
         limit 1
     </select>
-    <select id="existsByAllergyName" parameterType="string" resultType="boolean">
-        select case when count(*) > 0 then true else false end
-        from Allergy
-        where allergy_name = #{allergyName}
-    </select>
-    <insert id="save" useGeneratedKeys="true" keyProperty="allergyId">
-        insert into Allergy (allergy_name)
-        values (#{allergyName})
-    </insert>
 </mapper>

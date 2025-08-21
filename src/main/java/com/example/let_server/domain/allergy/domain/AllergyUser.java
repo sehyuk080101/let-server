@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AllergyUser {
+    private Long allergyUserId;
     private User user;
     private Allergy allergy;
 }

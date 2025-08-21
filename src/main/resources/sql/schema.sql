@@ -14,6 +14,16 @@ CREATE TABLE IF NOT EXISTS `Allergy` (
                                          `allergy_name` VARCHAR(255) NOT NULL
     );
 
+-- AllergyUser 테이블
+CREATE TABLE IF NOT EXISTS `AllergyUser` (
+                              allergy_user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                              allergy_idx BIGINT NOT NULL,
+                              user_id BIGINT NOT NULL,
+    FOREIGN KEY (`allergy_idx`) REFERENCES `Allergy` (`allergy_idx`) ON DELETE CASCADE,
+    FOREIGN KEY (`user_id`) REFERENCES `User` (`user_id`) ON DELETE CASCADE
+    );
+
+
 -- Menu 테이블
 CREATE TABLE IF NOT EXISTS `Menu` (
                                       `menu_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

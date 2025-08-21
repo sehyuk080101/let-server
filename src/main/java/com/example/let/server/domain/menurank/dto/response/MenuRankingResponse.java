@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MenuRankingDto {
+public class MenuRankingResponse {
     private Long menuId;
     private String menuName;
     private double menuScore;

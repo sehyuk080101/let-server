@@ -11,12 +11,20 @@ import java.util.Optional;
 
 public interface EaterRepository {
     Eater save(Eater eater);
+
     List<Eater> findByGrade(Long grade);
+
     List<EaterRatioResponse> getEaterRation(String mealType, Date mealDate);
+
     Integer getNotEaterCount(MealType mealType, Date mealDate);
-    List<EaterRatioResponse> getEaterRationMonthly(MealType mealType, int year,int month);
+
+    List<EaterRatioResponse> getEaterRationMonthly(MealType mealType, int year, int month);
+
     List<EaterRatioResponse> getAllEaterRationMonthly(int year, int month);
+
     Optional<Eater> findByUserIdAndMealId(@Param("userId") Long userId, @Param("mealId") Integer mealId);
+
     Double getMonthlyParticipationRate(int year, int month);
+
     Double getMonthlyTotalCaloriesConsumed(int year, int month);
 }

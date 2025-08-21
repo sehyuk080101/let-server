@@ -1,7 +1,7 @@
 package com.example.let.server.domain.menurank.controller;
 
 import com.example.let.server.domain.menurank.docs.MenuRankDocs;
-import com.example.let.server.domain.menurank.dto.response.MenuRankingDto;
+import com.example.let.server.domain.menurank.dto.response.MenuRankingResponse;
 import com.example.let.server.domain.menurank.service.MenuRankService;
 import com.example.let.server.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class MenuRankController implements MenuRankDocs {
 
     @GetMapping
     @Override
-    public ResponseEntity<BaseResponse<List<MenuRankingDto>>> getMenuRankings(){
+    public ResponseEntity<BaseResponse<List<MenuRankingResponse>>> getMenuRankings(){
         return BaseResponse.of(menuRankService.getMenuRankings());
     }
 

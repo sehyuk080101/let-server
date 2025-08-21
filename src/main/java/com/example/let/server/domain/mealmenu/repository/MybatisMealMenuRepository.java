@@ -12,7 +12,6 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public class MybatisMealMenuRepository implements MealMenuRepository {
-
     private final MealMenuMapper mealMenuMapper;
 
     @Override

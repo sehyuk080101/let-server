@@ -14,7 +14,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ExerciseServiceImpl implements ExerciseService {
-
     private final ExerciseRepository exerciseRepository;
 
     @Override

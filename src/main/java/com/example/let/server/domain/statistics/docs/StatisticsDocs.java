@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "통계", description = "급식 관련 월별 통계 API")
 public interface StatisticsDocs {
-
     @Operation(summary = "월별 급식 통계 조회", description = "지정된 년월의 급식 통계를 조회합니다. (사용자 수, 참여율, 평점, 칼로리 등)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "통계 조회 성공"),

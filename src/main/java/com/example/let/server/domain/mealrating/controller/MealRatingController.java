@@ -6,6 +6,7 @@ import com.example.let.server.domain.mealrating.dto.response.MealRatingResponse;
 import com.example.let.server.domain.mealrating.service.MealRatingService;
 import com.example.let.server.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class MealRatingController implements MealRatingDocs {
     @PostMapping
     @Override
     public ResponseEntity<BaseResponse<MealRatingResponse>> saveMealRating(@RequestBody MealRatingRequest mealRatingRequest) {
-        return BaseResponse.of(mealRatingService.saveMealRating(mealRatingRequest), 201);
+        return BaseResponse.of(mealRatingService.saveMealRating(mealRatingRequest), HttpStatus.CREATED.value());
     }
 
     @GetMapping("/meal/{mealId}")

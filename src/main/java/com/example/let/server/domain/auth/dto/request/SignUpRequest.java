@@ -1,9 +1,7 @@
 package com.example.let.server.domain.auth.dto.request;
 
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
 
 public record SignUpRequest(
         @NotBlank

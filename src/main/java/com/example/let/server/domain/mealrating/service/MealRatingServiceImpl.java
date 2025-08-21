@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class MealRatingServiceImpl implements MealRatingService {
     private final MealRatingRepository mealRatingRepository;
     private final MealService mealService;
+
     @Override
     public MealRatingResponse saveMealRating(MealRatingRequest request) {
         Meal meal = mealService.getMealById(request.getMealId());
@@ -52,5 +53,4 @@ public class MealRatingServiceImpl implements MealRatingService {
         // 해당 년월의 모든 급식 평점 평균 계산
         return mealRatingRepository.getMonthlyAverageRating(year, month);
     }
-
 }

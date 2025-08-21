@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface MenuAllergyRepository {
     MenuAllergy save(MenuAllergy menuAllergy);
+
     List<Allergy> findAllergyByMealId(Integer mealId);
+
     void saveAllBatch(Long menuId, List<Long> allergyIds);
 }

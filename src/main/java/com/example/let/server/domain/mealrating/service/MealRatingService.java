@@ -8,7 +8,10 @@ import java.util.List;
 
 public interface MealRatingService {
     MealRatingResponse saveMealRating(MealRatingRequest request);
+
     List<MealRatingResponse> getMealRatingsByMealId(int mealId);
+
     Double getAverageRatingByMealId(int mealId);
+
     Double getMonthlyAverageRating(int year, int month);
 }

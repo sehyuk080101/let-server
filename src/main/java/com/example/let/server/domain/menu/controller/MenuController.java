@@ -5,6 +5,7 @@ import com.example.let.server.domain.menu.domain.Menu;
 import com.example.let.server.domain.menu.service.MenuService;
 import com.example.let.server.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class MenuController implements MenuDocs {
     @Override
     public ResponseEntity<BaseResponse<Void>> increaseLike(@PathVariable("menuId") Long menuId) {
         menuService.increaseLikeCount(menuId);
-        return BaseResponse.of(null, 204);
+        return BaseResponse.of(null, HttpStatus.NO_CONTENT.value());
     }
 
 
@@ -28,7 +29,7 @@ public class MenuController implements MenuDocs {
     @Override
     public ResponseEntity<BaseResponse<Void>> increaseDislikeCount(@PathVariable("menuId") Long menuId) {
         menuService.increaseDislikeCount(menuId);
-        return BaseResponse.of(null, 204);
+        return BaseResponse.of(null, HttpStatus.NO_CONTENT.value());
     }
 
     @GetMapping

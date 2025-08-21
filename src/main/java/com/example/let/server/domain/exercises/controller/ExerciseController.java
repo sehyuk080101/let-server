@@ -14,7 +14,6 @@ import java.util.List;
 @RequestMapping("/exercises")
 @RequiredArgsConstructor
 public class ExerciseController implements ExerciseDocs {
-
     private final ExerciseService exerciseService;
 
     @GetMapping

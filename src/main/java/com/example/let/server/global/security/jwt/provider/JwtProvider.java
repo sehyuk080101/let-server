@@ -7,7 +7,7 @@ import com.example.let.server.domain.user.repository.UserRepository;
 import com.example.let.server.global.error.CustomException;
 import com.example.let.server.global.security.details.CustomUserDetails;
 import com.example.let.server.global.security.jwt.config.JwtProperties;
-import com.example.let.server.global.security.jwt.dto.Jwt;
+import com.example.let.server.domain.auth.dto.response.JwtResponse;
 import com.example.let.server.global.security.jwt.enums.JwtType;
 import com.example.let.server.global.security.jwt.error.JwtError;
 import io.jsonwebtoken.*;
@@ -45,7 +45,7 @@ public class JwtProvider {
                 Jwts.SIG.HS512.key().build().getAlgorithm());
     }
 
-    public Jwt generateToken(String username) {
+    public JwtResponse generateToken(String username) {
         Date now = new Date();
 
         String accessToken = Jwts.builder()
@@ -76,7 +76,7 @@ public class JwtProvider {
 
         refreshTokenRepository.save(username, refreshToken);
 
-        return new Jwt(accessToken, refreshToken);
+        return new JwtResponse(accessToken, refreshToken);
     }
 
     public Authentication getAuthentication(String token) {

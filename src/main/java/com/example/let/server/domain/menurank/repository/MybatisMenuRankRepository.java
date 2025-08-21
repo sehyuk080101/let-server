@@ -1,6 +1,6 @@
 package com.example.let.server.domain.menurank.repository;
 
-import com.example.let.server.domain.menurank.dto.response.MenuRankingDto;
+import com.example.let.server.domain.menurank.dto.response.MenuRankingResponse;
 import com.example.let.server.domain.menurank.mapper.MenuRankMapper;
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +16,7 @@ public class MybatisMenuRankRepository implements MenuRankRepository {
     }
 
     @Override
-    public List<MenuRankingDto> findAllOrderByScoreDesc() {
+    public List<MenuRankingResponse> findAllOrderByScoreDesc() {
         return mealRatingMapper.findAllOrderByScoreDesc();
     }
 

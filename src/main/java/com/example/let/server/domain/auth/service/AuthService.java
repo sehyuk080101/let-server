@@ -3,12 +3,12 @@ package com.example.let.server.domain.auth.service;
 import com.example.let.server.domain.auth.dto.request.LoginRequest;
 import com.example.let.server.domain.auth.dto.request.ReissueRequest;
 import com.example.let.server.domain.auth.dto.request.SignUpRequest;
-import com.example.let.server.global.security.jwt.dto.Jwt;
+import com.example.let.server.domain.auth.dto.response.JwtResponse;
 
 public interface AuthService {
     void signup(SignUpRequest request);
 
-    Jwt login(LoginRequest request);
+    JwtResponse login(LoginRequest request);
 
-    Jwt reissue(ReissueRequest request);
+    JwtResponse reissue(ReissueRequest request);
 }

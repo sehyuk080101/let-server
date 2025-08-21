@@ -16,7 +16,6 @@ import java.util.List;
 
 @Tag(name = "meal-rating", description = "급식 평점 관련 API")
 public interface MealRatingDocs {
-    
     @Operation(summary = "급식 평점 등록", description = "특정 급식에 대한 평점을 등록합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "평점 등록 성공"),

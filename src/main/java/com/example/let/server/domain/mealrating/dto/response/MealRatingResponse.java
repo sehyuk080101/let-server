@@ -3,12 +3,9 @@ package com.example.let.server.domain.mealrating.dto.response;
 
 import com.example.let.server.domain.meal.dto.response.MealWithOutMenusResponse;
 import com.example.let.server.domain.mealrating.domain.MealRating;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

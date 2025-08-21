@@ -1,17 +1,12 @@
 package com.example.let.server.domain.meal.dto.response;
 
-
 import com.example.let.server.domain.meal.domain.Meal;
 import com.example.let.server.domain.meal.domain.MealType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 
 import java.util.Date;
 
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

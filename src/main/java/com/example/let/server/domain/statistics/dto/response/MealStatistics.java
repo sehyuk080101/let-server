@@ -1,9 +1,9 @@
 package com.example.let.server.domain.statistics.dto.response;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
 public class MealStatistics {
     private Long mealId;

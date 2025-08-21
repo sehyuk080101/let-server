@@ -1,12 +1,9 @@
 package com.example.let.server.domain.mealrating.domain;
 
 import com.example.let.server.domain.meal.domain.Meal;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

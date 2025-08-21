@@ -38,7 +38,7 @@
             UNION ALL SELECT 3
             ) g
             LEFT JOIN (
-            SELECT student_id DIV 1000 AS grade, COUNT (*) AS count
+            SELECT student_id DIV 1000 AS grade, COUNT(*) AS count
             FROM users
             GROUP BY student_id DIV 1000
             ) u

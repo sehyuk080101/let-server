@@ -67,7 +67,7 @@
     <!-- 저참여율 급식 조회 -->
     <select id="findLowParticipationMeals"
             resultType="com.example.let.server.domain.statistics.dto.response.LowParticipationMeal">
-        SELECT m.meal_id as mealId, DATE (m.meal_date) as date, m.meal_type as mealType, COALESCE (GROUP_CONCAT(DISTINCT menu.menu_name SEPARATOR ', '), '메뉴 정보 없음') as menuName, COUNT (DISTINCT u.user_id) as totalStudents, COUNT (DISTINCT CASE WHEN e.eaten = true THEN e.user_id END) as eatenCount, ROUND((COUNT (DISTINCT CASE WHEN e.eaten = true THEN e.user_id END) * 100.0 / COUNT (DISTINCT u.user_id)), 2) as participationRate
+        SELECT m.meal_id as mealId, DATE(m.meal_date) as date, m.meal_type as mealType, COALESCE(GROUP_CONCAT(DISTINCT menu.menu_name SEPARATOR ', '), '메뉴 정보 없음') as menuName, COUNT(DISTINCT u.user_id) as totalStudents, COUNT(DISTINCT CASE WHEN e.eaten = true THEN e.user_id END) as eatenCount, ROUND((COUNT(DISTINCT CASE WHEN e.eaten = true THEN e.user_id END) * 100.0 / COUNT(DISTINCT u.user_id)), 2) as participationRate
         FROM meals m
             CROSS JOIN users u
             LEFT JOIN eaters e

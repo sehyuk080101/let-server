@@ -2,6 +2,7 @@ package com.example.let.server.domain.auth.service.impl;
 
 import com.example.let.server.domain.allergy.domain.Allergy;
 import com.example.let.server.domain.allergy.domain.AllergyUser;
+import com.example.let.server.domain.allergy.error.AllergyError;
 import com.example.let.server.domain.allergy.repository.AllergyRepository;
 import com.example.let.server.domain.allergy.repository.AllergyUserRepository;
 import com.example.let.server.domain.auth.dto.request.LoginRequest;
@@ -66,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
 
     private void registerAllergy(List<String> allergies, User user) {
         allergies.forEach(item -> {
-            Allergy allergy = allergyRepository.findByAllergyName(item).orElse(createNewAllergy(item));
+            Allergy allergy = allergyRepository.findByAllergyName(item).orElseThrow(() -> new CustomException(AllergyError.ALLERGY_NOT_FOUND));
             AllergyUser allergyUser = AllergyUser
                     .builder()
                     .allergy(allergy)
@@ -75,16 +76,6 @@ public class AuthServiceImpl implements AuthService {
 
             allergyUserRepository.insertAllergyUser(allergyUser);
         });
-    }
-
-    private Allergy createNewAllergy(String allergyName) {
-        Allergy newAllergy = Allergy.builder()
-                .allergyName(allergyName)
-                .build();
-
-        allergyRepository.save(newAllergy);
-
-        return newAllergy;
     }
 
     @Override

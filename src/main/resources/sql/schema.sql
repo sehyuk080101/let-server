@@ -81,6 +81,15 @@ CREATE TABLE IF NOT EXISTS `meal_ratings` (
                                             FOREIGN KEY (`meal_id`) REFERENCES `meals` (`meal_id`) ON DELETE CASCADE
     );
 
+-- MealAmount 테이블
+CREATE TABLE IF NOT EXISTS `meal_amounts` (
+                                            `meal_amount_id` BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                            `meal_id` INT NOT NULL,
+                                            `rating` VARCHAR(50) NOT NULL,
+                                            FOREIGN KEY (`meal_id`) REFERENCES `meals` (`meal_id`) ON DELETE CASCADE
+);
+
+
 -- menu_rank_histories 테이블
 CREATE TABLE IF NOT EXISTS `menu_rank_histories` (
                                                  `history_id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,

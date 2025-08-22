@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record MealAmountRequest(
     @NotBlank
-    Long mealId,
+    Integer mealId,
     @NotBlank
     Rating rating
 ) {

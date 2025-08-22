@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.let.server.domain.mealamount.mapper.MealAmountMapper">
+
+    <insert id="save" parameterType="com.example.let.server.domain.mealamount.domain.MealAmount"
+            useGeneratedKeys="true" keyProperty="mealAmountId">
+        INSERT INTO meal_amounts (meal_id, rating)
+        VALUES (#{meal.mealId}, #{rating})
+    </insert>
+
+    <resultMap id="MealAmountMap" type="com.example.let.server.domain.mealamount.domain.MealAmount">
+        <id property="mealAmountId" column="meal_amount_id"/>
+        <result property="rating" column="rating"/>
+
+        <association property="meal" javaType="com.example.let.server.domain.meal.domain.Meal">
+            <id property="mealId" column="meal_id"/>
+            <result property="mealDate" column="meal_date"/>
+            <result property="mealType" column="meal_type"/>
+            <result property="score" column="score"/>
+            <result property="calorie" column="calorie"/>
+        </association>
+    </resultMap>
+
+    <select id="findAll" resultMap="MealAmountMap">
+        SELECT ma.meal_amount_id,
+               ma.rating,
+               m.meal_id,
+               m.meal_date,
+               m.meal_type,
+               m.score,
+               m.calorie
+        FROM meal_amounts ma
+                 JOIN meals m ON ma.meal_id = m.meal_id
+    </select>
+
+    <select id="findByMealId" parameterType="integer" resultMap="MealAmountMap">
+        SELECT ma.meal_amount_id,
+               ma.rating,
+               m.meal_id,
+               m.meal_date,
+               m.meal_type,
+               m.score,
+               m.calorie
+        FROM meal_amounts ma
+                 JOIN meals m ON ma.meal_id = m.meal_id
+        WHERE ma.meal_id = #{mealId}
+    </select>
+
+</mapper>

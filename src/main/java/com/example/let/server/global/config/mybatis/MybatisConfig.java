@@ -15,6 +15,9 @@ import com.example.let.server.domain.exercises.repository.MybatisExerciseReposit
 import com.example.let.server.domain.meal.mapper.MealMapper;
 import com.example.let.server.domain.meal.repository.MealRepository;
 import com.example.let.server.domain.meal.repository.MybatisMealRepository;
+import com.example.let.server.domain.mealamount.mapper.MealAmountMapper;
+import com.example.let.server.domain.mealamount.repository.MealAmountRepository;
+import com.example.let.server.domain.mealamount.repository.MybatisMealAmountRepository;
 import com.example.let.server.domain.mealmenu.mapper.MealMenuMapper;
 import com.example.let.server.domain.mealmenu.repository.MealMenuRepository;
 import com.example.let.server.domain.mealmenu.repository.MybatisMealMenuRepository;
@@ -52,6 +55,7 @@ public class MybatisConfig {
     private final MealRatingMapper mealRatingMapper;
     private final ExerciseMapper exerciseMapper;
     private final AllergyUserMapper allergyUserMapper;
+    private final MealAmountMapper mealAmountMapper;
 
     @Bean
     public UserRepository userRepository() {
@@ -103,5 +107,8 @@ public class MybatisConfig {
     }
 
     @Bean
-    public AllergyUserRepository allergyUserRepository() { return  new MybatisAllergyUserRepository(allergyUserMapper); }
+    public AllergyUserRepository allergyUserRepository() { return new MybatisAllergyUserRepository(allergyUserMapper); }
+
+    @Bean
+    public MealAmountRepository mealAmountRepository() { return new MybatisMealAmountRepository(mealAmountMapper); }
 }

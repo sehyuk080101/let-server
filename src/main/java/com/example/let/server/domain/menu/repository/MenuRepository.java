@@ -19,4 +19,6 @@ public interface MenuRepository {
     void increaseDislikeCount(Long menuId);
 
     List<Menu> findAll();
+
+    int countMenus();
 }

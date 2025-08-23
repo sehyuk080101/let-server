@@ -39,4 +39,8 @@
     <select id="findAll" resultType="com.example.let.server.domain.menu.domain.Menu">
         SELECT * FROM menus
     </select>
+
+    <select id="countMenus" resultType="int">
+        SELECT COUNT(*) FROM menus
+    </select>
 </mapper>

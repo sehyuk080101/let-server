@@ -2,6 +2,7 @@ package com.example.let.server.domain.statistics.service.impl;
 
 import com.example.let.server.domain.eater.service.EaterService;
 import com.example.let.server.domain.mealrating.service.MealRatingService;
+import com.example.let.server.domain.menurank.dto.response.MenuRankingResponse;
 import com.example.let.server.domain.menurank.service.MenuRankService;
 import com.example.let.server.domain.meal.service.MealService;
 import com.example.let.server.domain.statistics.dto.response.MonthlyStatisticsResponse;
@@ -39,12 +40,12 @@ public class StatisticsServiceImpl implements StatisticsService {
         var menuRanks = menuRankService.getMenuRankings();
         List<String> topMenus = menuRanks.stream()
                 .limit(5)
-                .map(menu -> menu.getMenuName())
+                .map(MenuRankingResponse::getMenuName)
                 .toList();
         
         List<String> leastPopularMenus = menuRanks.stream()
                 .skip(Math.max(0, menuRanks.size() - 5))
-                .map(menu -> menu.getMenuName())
+                .map(MenuRankingResponse::getMenuName)
                 .toList();
         
         // 실제 계산된 통계값들

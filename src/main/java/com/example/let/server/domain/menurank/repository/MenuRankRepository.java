@@ -8,6 +8,7 @@ import java.util.List;
 public interface MenuRankRepository {
     void updateMenuScoreByWilson();
     List<MenuRankingResponse> findAllOrderByScoreDesc();
+    List<MenuRankingResponse> findMenuRankingsOrderByScoreDesc(int limit,int offset);
     void saveMenuRankHistory(Long menuId, Date date, int rank, int rankDiff);
     Integer getRankDiff(Long menuId,Date date);
 }

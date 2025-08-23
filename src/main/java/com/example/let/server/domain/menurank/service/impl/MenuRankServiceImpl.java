@@ -1,6 +1,8 @@
 package com.example.let.server.domain.menurank.service.impl;
 
+import com.example.let.server.domain.meal.domain.Meal;
 import com.example.let.server.domain.menu.repository.MenuRepository;
+import com.example.let.server.domain.menurank.dto.response.MenuPageResponse;
 import com.example.let.server.domain.menurank.dto.response.MenuRankingResponse;
 import com.example.let.server.domain.menurank.repository.MenuRankRepository;
 import com.example.let.server.domain.menurank.service.MenuRankService;
@@ -18,6 +20,8 @@ import java.util.List;
 public class MenuRankServiceImpl implements MenuRankService {
     private final MenuRankRepository menuRankRepository;
     private final MenuRepository menuRepository;
+
+    private static final int PAGE_SIZE = 20;
 
     @Scheduled(cron = "0 0 0 * * *")
     private void updateMenuScoreByWilson() {
@@ -49,8 +53,12 @@ public class MenuRankServiceImpl implements MenuRankService {
     }
 
     @Override
-    public List<MenuRankingResponse> getMenuRankings() {
-        return menuRankRepository.findAllOrderByScoreDesc();
+    public MenuPageResponse getMenuRankingsPage(int page) {
+        int offset = (page - 1) * PAGE_SIZE;
+        List<MenuRankingResponse> menus = menuRankRepository.findMenuRankingsOrderByScoreDesc(PAGE_SIZE, offset);
+        int total = menuRepository.countMenus();
+
+        return MenuPageResponse.of(menus,total,PAGE_SIZE,page);
     }
 
     @Override
@@ -58,5 +66,10 @@ public class MenuRankServiceImpl implements MenuRankService {
         Date today = getToday();
         Integer result = menuRankRepository.getRankDiff(menuId, today);
         return (result != null) ? result : 0;
+    }
+
+    @Override
+    public List<MenuRankingResponse> getMenuRankings() {
+        return menuRankRepository.findAllOrderByScoreDesc();
     }
 }

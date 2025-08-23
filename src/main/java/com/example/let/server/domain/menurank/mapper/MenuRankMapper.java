@@ -11,6 +11,7 @@ import java.util.List;
 public interface MenuRankMapper {
     void updateMenuScoreByWilson();
     List<MenuRankingResponse> findAllOrderByScoreDesc();
+    List<MenuRankingResponse> findMenuRankingsOrderByScoreDesc(@Param("limit") int limit, @Param("offset") int offset);
     void saveMenuRankHistory(@Param("menuId") Long menuId, @Param("date") Date date, @Param("rank") int rank, @Param("rankDiff") int rankDiff);
     Integer getRankDiff(Long menuId,Date date);
 }

@@ -46,4 +46,9 @@ public class MybatisMenuRepository implements MenuRepository {
     public List<Menu> findAll() {
         return menuMapper.findAll();
     }
+
+    @Override
+    public int countMenus() {
+        return menuMapper.countMenus();
+    }
 }

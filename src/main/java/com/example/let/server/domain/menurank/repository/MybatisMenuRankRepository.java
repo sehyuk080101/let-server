@@ -9,24 +9,30 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class MybatisMenuRankRepository implements MenuRankRepository {
-    private final MenuRankMapper mealRatingMapper;
+    private final MenuRankMapper menuRankMapper;
     @Override
     public void updateMenuScoreByWilson() {
-        mealRatingMapper.updateMenuScoreByWilson();
+        menuRankMapper.updateMenuScoreByWilson();
     }
 
     @Override
     public List<MenuRankingResponse> findAllOrderByScoreDesc() {
-        return mealRatingMapper.findAllOrderByScoreDesc();
+        return menuRankMapper.findAllOrderByScoreDesc();
     }
 
     @Override
+    public List<MenuRankingResponse> findMenuRankingsOrderByScoreDesc(int limit, int offset) {
+        return menuRankMapper.findMenuRankingsOrderByScoreDesc(limit, offset);
+    }
+
+
+    @Override
     public void saveMenuRankHistory(Long menuId, Date date, int rank, int rankDiff) {
-        mealRatingMapper.saveMenuRankHistory(menuId, date, rank, rankDiff);
+        menuRankMapper.saveMenuRankHistory(menuId, date, rank, rankDiff);
     }
 
     @Override
     public Integer getRankDiff(Long menuId, Date date) {
-        return mealRatingMapper.getRankDiff(menuId,date);
+        return menuRankMapper.getRankDiff(menuId,date);
     }
 }

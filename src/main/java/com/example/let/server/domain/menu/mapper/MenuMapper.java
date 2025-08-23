@@ -22,4 +22,6 @@ public interface MenuMapper {
     void increaseDislikeCount(@Param("menuId") Long menuId);
 
     List<Menu> findAll();
+
+    int countMenus();
 }

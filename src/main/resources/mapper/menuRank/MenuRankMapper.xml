@@ -29,6 +29,13 @@
             )
     </update>
 
+    <select id="findMenuRankingsOrderByScoreDesc" resultMap="MenuRankingResultMap">
+        SELECT menu_id, menu_name, menu_score, current_rank
+        FROM menus
+        ORDER BY menu_score DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
     <select id="findAllOrderByScoreDesc" resultMap="MenuRankingResultMap">
         SELECT menu_id, menu_name, menu_score, current_rank
         FROM menus

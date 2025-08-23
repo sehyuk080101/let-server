@@ -1,15 +1,13 @@
 package com.example.let.server.domain.menurank.controller;
 
 import com.example.let.server.domain.menurank.docs.MenuRankDocs;
+import com.example.let.server.domain.menurank.dto.response.MenuPageResponse;
 import com.example.let.server.domain.menurank.dto.response.MenuRankingResponse;
 import com.example.let.server.domain.menurank.service.MenuRankService;
 import com.example.let.server.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,8 +19,8 @@ public class MenuRankController implements MenuRankDocs {
 
     @GetMapping
     @Override
-    public ResponseEntity<BaseResponse<List<MenuRankingResponse>>> getMenuRankings(){
-        return BaseResponse.of(menuRankService.getMenuRankings());
+    public ResponseEntity<BaseResponse<MenuPageResponse>> getMenuRankingsPage(@RequestParam(defaultValue = "1") int page){
+        return BaseResponse.of(menuRankService.getMenuRankingsPage(page));
     }
 
     @GetMapping("/diff/{menuId}")

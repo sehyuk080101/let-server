@@ -29,4 +29,6 @@ public interface EaterMapper {
     Double getMonthlyParticipationRate(@Param("year") int year, @Param("month") int month);
 
     Double getMonthlyTotalCaloriesConsumed(@Param("year") int year, @Param("month") int month);
+
+    void registerEater(@Param("eaterId") Long eaterId);
 }

@@ -61,4 +61,9 @@ public class MybatisEaterRepository implements EaterRepository {
     public Double getMonthlyTotalCaloriesConsumed(int year, int month) {
         return eaterMapper.getMonthlyTotalCaloriesConsumed(year, month);
     }
+
+    @Override
+    public void registerEater(Long eaterId) {
+        eaterMapper.registerEater(eaterId);
+    }
 }

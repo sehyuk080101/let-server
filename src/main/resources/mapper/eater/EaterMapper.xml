@@ -152,4 +152,10 @@
         WHERE YEAR (m.meal_date) = #{year}
           AND MONTH (m.meal_date) = #{month}
     </select>
+
+    <update id="registerEater">
+        UPDATE eaters
+        SET eaten = 1
+        WHERE eater_id = #{eaterId}
+    </update>
 </mapper>

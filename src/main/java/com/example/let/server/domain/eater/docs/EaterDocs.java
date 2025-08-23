@@ -74,4 +74,9 @@ public interface EaterDocs {
             @Parameter(description = "조회할 날짜 (yyyy-MM-dd 형식)", example = "2024-08-17")
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date
     );
+
+    @Operation(
+            summary = "급식 출석"
+    )
+    ResponseEntity<BaseResponse<Void>> registerEater();
 }

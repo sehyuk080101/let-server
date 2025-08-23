@@ -13,6 +13,7 @@ import com.example.let.server.domain.meal.service.MealService;
 import com.example.let.server.domain.user.domain.User;
 import com.example.let.server.domain.user.service.UserService;
 import com.example.let.server.global.error.CustomException;
+import com.example.let.server.global.security.holder.SecurityHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -31,14 +32,12 @@ public class EaterServiceImpl implements EaterService {
     private final MealService mealService;
     private final UserService userService;
     private final EaterRepository eaterRepository;
+    private final SecurityHolder securityHolder;
 
     @Scheduled(cron = "0 0 0,10,15 * * *")
     public void insertEater(){
-        MealType currentMealType = getCurrentMealType();
-        LocalDate localDate = LocalDate.now();
-        Date currentDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        Meal meal = mealService.getMealByMealTypeAndMealDate(currentMealType,currentDate);
+        Meal meal = getCurrentMeal();
         List<User> users = userService.findAllUser();
 
         for (User user : users) {
@@ -49,6 +48,13 @@ public class EaterServiceImpl implements EaterService {
 
             eaterRepository.save(eater);
         }
+    }
+
+    private Meal getCurrentMeal(){
+        MealType currentMealType = getCurrentMealType();
+        LocalDate localDate = LocalDate.now();
+        Date currentDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return mealService.getMealByMealTypeAndMealDate(currentMealType,currentDate);
     }
 
     private MealType getCurrentMealType(){
@@ -143,5 +149,14 @@ public class EaterServiceImpl implements EaterService {
     @Override
     public Double getMonthlyTotalCaloriesConsumed(int year, int month) {
         return eaterRepository.getMonthlyTotalCaloriesConsumed(year, month);
+    }
+
+    @Override
+    public void registerEater() {
+        Meal meal = getCurrentMeal();
+        User currentUser = securityHolder.getUser();
+        Eater eater = eaterRepository.findByUserIdAndMealId(currentUser.getUserId(),meal.getMealId())
+                .orElseThrow(()->new CustomException(EaterError.EATER_NOT_FOUND));
+        eaterRepository.registerEater(eater.getEaterId());
     }
 }

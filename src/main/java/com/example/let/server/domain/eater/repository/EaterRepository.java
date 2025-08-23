@@ -27,4 +27,6 @@ public interface EaterRepository {
     Double getMonthlyParticipationRate(int year, int month);
 
     Double getMonthlyTotalCaloriesConsumed(int year, int month);
+
+    void registerEater(Long eaterId);
 }

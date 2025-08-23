@@ -23,4 +23,6 @@ public interface EaterService {
     Double getMonthlyParticipationRate(int year, int month);
 
     Double getMonthlyTotalCaloriesConsumed(int year, int month);
+
+    void registerEater();
 }

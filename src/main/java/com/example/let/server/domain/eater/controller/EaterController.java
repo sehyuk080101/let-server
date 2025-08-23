@@ -7,6 +7,7 @@ import com.example.let.server.domain.eater.dto.response.UserCalorieResponse;
 import com.example.let.server.domain.eater.service.EaterService;
 import com.example.let.server.global.common.BaseResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -58,4 +59,13 @@ public class EaterController implements EaterDocs {
             @PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         return BaseResponse.of(eaterService.getUserCalorieIntake(userId, date));
     }
+
+    @PatchMapping
+    @Override
+    public ResponseEntity<BaseResponse<Void>> registerEater() {
+        eaterService.registerEater();
+        return BaseResponse.of(null, HttpStatus.NO_CONTENT.value());
+    }
+
+
 }

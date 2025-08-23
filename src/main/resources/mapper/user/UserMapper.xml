@@ -23,6 +23,7 @@
     <select id="findAll" resultType="User">
         select user_id, username, password, student_id, real_name, role
         from users
+        where role = ROLE_USER
     </select>
 
     <select id="count" resultType="java.lang.Long">

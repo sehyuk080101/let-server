@@ -8,7 +8,7 @@ import java.util.List;
 public interface MenuRankService {
     List<MenuRankingResponse> getMenuRankings();
 
-    MenuPageResponse getMenuRankingsPage(int page);
+    MenuPageResponse getMenuRankingsPage(int page, boolean reverse);
 
     Integer getRankDiff(Long menuId);
 }

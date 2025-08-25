@@ -14,7 +14,7 @@ import java.util.List;
 @Tag(name = "menu-rank", description = "메뉴 랭킹 API")
 public interface MenuRankDocs {
     @Operation(summary = "메뉴 랭킹 받아오기")
-    ResponseEntity<BaseResponse<MenuPageResponse>> getMenuRankingsPage(@RequestParam(defaultValue = "1") int page);
+    ResponseEntity<BaseResponse<MenuPageResponse>> getMenuRankingsPage(@RequestParam(defaultValue = "1") int page,@RequestParam boolean reverse);
     @Operation(summary = "메뉴 랭킹 변화 가져오기")
     ResponseEntity<BaseResponse<Integer>> getRankDiff(@PathVariable Long menuId);
 }

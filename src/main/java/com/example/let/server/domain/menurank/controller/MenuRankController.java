@@ -19,8 +19,8 @@ public class MenuRankController implements MenuRankDocs {
 
     @GetMapping
     @Override
-    public ResponseEntity<BaseResponse<MenuPageResponse>> getMenuRankingsPage(@RequestParam(defaultValue = "1") int page){
-        return BaseResponse.of(menuRankService.getMenuRankingsPage(page));
+    public ResponseEntity<BaseResponse<MenuPageResponse>> getMenuRankingsPage(@RequestParam(defaultValue = "1") int page, @RequestParam boolean reverse){
+        return BaseResponse.of(menuRankService.getMenuRankingsPage(page, reverse));
     }
 
     @GetMapping("/diff/{menuId}")

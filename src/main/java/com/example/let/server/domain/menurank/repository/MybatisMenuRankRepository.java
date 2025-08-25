@@ -21,8 +21,8 @@ public class MybatisMenuRankRepository implements MenuRankRepository {
     }
 
     @Override
-    public List<MenuRankingResponse> findMenuRankingsOrderByScoreDesc(int limit, int offset) {
-        return menuRankMapper.findMenuRankingsOrderByScoreDesc(limit, offset);
+    public List<MenuRankingResponse> findMenuRankingsOrderByScoreDesc(int limit, int offset,boolean reverse) {
+        return menuRankMapper.findMenuRankingsOrderByScoreDesc(limit, offset,reverse);
     }
 
 

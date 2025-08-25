@@ -32,7 +32,10 @@
     <select id="findMenuRankingsOrderByScoreDesc" resultMap="MenuRankingResultMap">
         SELECT menu_id, menu_name, menu_score, current_rank
         FROM menus
-        ORDER BY menu_score DESC
+        ORDER BY current_rank
+        <if test="reverse">
+            DESC
+        </if>
         LIMIT #{limit} OFFSET #{offset}
     </select>
 

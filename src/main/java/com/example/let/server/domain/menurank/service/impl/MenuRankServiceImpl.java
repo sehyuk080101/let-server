@@ -53,9 +53,9 @@ public class MenuRankServiceImpl implements MenuRankService {
     }
 
     @Override
-    public MenuPageResponse getMenuRankingsPage(int page) {
+    public MenuPageResponse getMenuRankingsPage(int page, boolean reverse) {
         int offset = (page - 1) * PAGE_SIZE;
-        List<MenuRankingResponse> menus = menuRankRepository.findMenuRankingsOrderByScoreDesc(PAGE_SIZE, offset);
+        List<MenuRankingResponse> menus = menuRankRepository.findMenuRankingsOrderByScoreDesc(PAGE_SIZE, offset, reverse);
         int total = menuRepository.countMenus();
 
         return MenuPageResponse.of(menus,total,PAGE_SIZE,page);

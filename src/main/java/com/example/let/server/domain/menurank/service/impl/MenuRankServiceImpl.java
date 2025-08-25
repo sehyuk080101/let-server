@@ -21,7 +21,7 @@ public class MenuRankServiceImpl implements MenuRankService {
     private final MenuRankRepository menuRankRepository;
     private final MenuRepository menuRepository;
 
-    private static final int PAGE_SIZE = 20;
+    private static final int PAGE_SIZE = 10;
 
     @Scheduled(cron = "0 0 0 * * *")
     private void updateMenuScoreByWilson() {

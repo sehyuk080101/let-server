@@ -1,13 +1,24 @@
 package com.example.let.server.domain.user.service.impl;
 
+import com.example.let.server.domain.eater.domain.Eater;
+import com.example.let.server.domain.eater.error.EaterError;
+import com.example.let.server.domain.eater.repository.EaterRepository;
+import com.example.let.server.domain.meal.domain.Meal;
+import com.example.let.server.domain.meal.domain.MealType;
+import com.example.let.server.domain.meal.service.MealService;
 import com.example.let.server.domain.user.domain.User;
 import com.example.let.server.domain.user.dto.response.UserInfoResponse;
 import com.example.let.server.domain.user.repository.UserRepository;
 import com.example.let.server.domain.user.service.UserService;
+import com.example.let.server.global.error.CustomException;
 import com.example.let.server.global.security.holder.SecurityHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +27,35 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final SecurityHolder securityHolder;
+    private final MealService mealService;
+    private final EaterRepository eaterRepository;
+
+    private boolean isEaten(){
+        Meal meal = getCurrentMeal();
+        User currentUser = securityHolder.getUser();
+        Eater eater = eaterRepository.findByUserIdAndMealId(currentUser.getUserId(),meal.getMealId())
+                .orElseThrow(()->new CustomException(EaterError.EATER_NOT_FOUND));
+        return eater.isEaten();
+    }
+
+    private Meal getCurrentMeal(){
+        MealType currentMealType = getCurrentMealType();
+        LocalDate localDate = LocalDate.now();
+        Date currentDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return mealService.getMealByMealTypeAndMealDate(currentMealType,currentDate);
+    }
+
+    private MealType getCurrentMealType(){
+        int hour = LocalDateTime.now().getHour();
+
+        if (hour < 10) {
+            return MealType.조식;
+        } else if (hour < 15) {
+            return MealType.중식;
+        } else {
+            return MealType.석식;
+        }
+    }
 
     @Override
     public List<User> findAllUser() {
@@ -25,7 +65,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoResponse getMe() {
         User currentUser = securityHolder.getUser();
-        return UserInfoResponse.of(currentUser);
+        Boolean isAttend = isEaten();
+        return UserInfoResponse.of(currentUser,isAttend);
     }
 
     @Override

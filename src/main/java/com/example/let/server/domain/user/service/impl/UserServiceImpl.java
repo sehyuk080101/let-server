@@ -1,7 +1,6 @@
 package com.example.let.server.domain.user.service.impl;
 
 import com.example.let.server.domain.eater.domain.Eater;
-import com.example.let.server.domain.eater.error.EaterError;
 import com.example.let.server.domain.eater.repository.EaterRepository;
 import com.example.let.server.domain.meal.domain.Meal;
 import com.example.let.server.domain.meal.domain.MealType;
@@ -10,7 +9,6 @@ import com.example.let.server.domain.user.domain.User;
 import com.example.let.server.domain.user.dto.response.UserInfoResponse;
 import com.example.let.server.domain.user.repository.UserRepository;
 import com.example.let.server.domain.user.service.UserService;
-import com.example.let.server.global.error.CustomException;
 import com.example.let.server.global.security.holder.SecurityHolder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,14 +28,6 @@ public class UserServiceImpl implements UserService {
     private final SecurityHolder securityHolder;
     private final MealService mealService;
     private final EaterRepository eaterRepository;
-
-    private boolean isEaten(){
-        Meal meal = getCurrentMeal();
-        User currentUser = securityHolder.getUser();
-        Eater eater = eaterRepository.findByUserIdAndMealId(currentUser.getUserId(),meal.getMealId())
-                .orElseThrow(()->new CustomException(EaterError.EATER_NOT_FOUND));
-        return eater.isEaten();
-    }
 
     private Meal getCurrentMeal(){
         MealType currentMealType = getCurrentMealType();
@@ -57,6 +48,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    private boolean isEaten(){
+        try {
+            Meal meal = getCurrentMeal();
+            User currentUser = securityHolder.getUser();
+            Optional<Eater> eaterOpt = eaterRepository.findByUserIdAndMealId(currentUser.getUserId(), meal.getMealId());
+            return eaterOpt.isPresent() && eaterOpt.get().isEaten();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     @Override
     public List<User> findAllUser() {
         return userRepository.findAll();
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
     public UserInfoResponse getMe() {
         User currentUser = securityHolder.getUser();
         Boolean isAttend = isEaten();
-        return UserInfoResponse.of(currentUser,isAttend);
+        return UserInfoResponse.of(currentUser, isAttend);
     }
 
     @Override

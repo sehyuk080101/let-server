@@ -19,6 +19,14 @@
         values (#{eaterId}, #{user.userId}, #{meal.mealId}, #{eaten})
     </insert>
 
+    <insert id="insertEaterBatch">
+        insert into eaters(user_id, meal_id, eaten)
+        values
+        <foreach collection="list" item="eater" separator=",">
+            (#{eater.user.userId}, #{eater.meal.mealId}, #{eater.eaten})
+        </foreach>
+    </insert>
+
     <select id="findByGrade" resultMap="EaterResponseMap" parameterType="long">
         <bind name="lowerBound" value="_parameter * 1000"/>
         <bind name="upperBound" value="(_parameter + 1) * 1000"/>

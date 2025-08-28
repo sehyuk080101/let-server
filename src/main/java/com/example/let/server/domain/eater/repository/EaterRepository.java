@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface EaterRepository {
     Eater save(Eater eater);
+    
+    void saveAll(List<Eater> eaters);
 
     List<Eater> findByGrade(Long grade);
 

@@ -13,6 +13,8 @@ import java.util.Optional;
 @Mapper
 public interface EaterMapper {
     void insertEater(Eater eater);
+    
+    void insertEaterBatch(List<Eater> eaters);
 
     List<Eater> findByGrade(Long grade);
 

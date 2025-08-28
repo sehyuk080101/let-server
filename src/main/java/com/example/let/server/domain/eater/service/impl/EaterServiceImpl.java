@@ -14,6 +14,7 @@ import com.example.let.server.domain.user.domain.User;
 import com.example.let.server.domain.user.service.UserService;
 import com.example.let.server.global.error.CustomException;
 import com.example.let.server.global.security.holder.SecurityHolder;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -35,18 +36,22 @@ public class EaterServiceImpl implements EaterService {
     private final SecurityHolder securityHolder;
 
     @Scheduled(cron = "0 0 0,10,15 * * *")
+    @PostConstruct
     public void insertEater(){
+        try {
+            Meal meal = getCurrentMeal();
+            List<User> users = userService.findAllUser();
 
-        Meal meal = getCurrentMeal();
-        List<User> users = userService.findAllUser();
+            List<Eater> eaters = users.stream()
+                    .map(user -> Eater.builder()
+                            .user(user)
+                            .meal(meal)
+                            .build())
+                    .toList();
 
-        for (User user : users) {
-            Eater eater = Eater.builder()
-                    .user(user)
-                    .meal(meal)
-                    .build();
-
-            eaterRepository.save(eater);
+            eaterRepository.saveAll(eaters);
+        } catch (CustomException e) {
+            // 급식 정보가 없는 경우 (주말, 휴일 등) 무시하고 계속 진행
         }
     }
 

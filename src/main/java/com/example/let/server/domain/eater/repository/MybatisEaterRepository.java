@@ -23,6 +23,13 @@ public class MybatisEaterRepository implements EaterRepository {
     }
 
     @Override
+    public void saveAll(List<Eater> eaters) {
+        if (!eaters.isEmpty()) {
+            eaterMapper.insertEaterBatch(eaters);
+        }
+    }
+
+    @Override
     public List<Eater> findByGrade(Long grade) {
         return eaterMapper.findByGrade(grade);
     }

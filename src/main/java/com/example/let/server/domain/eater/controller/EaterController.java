@@ -13,6 +13,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -67,5 +68,9 @@ public class EaterController implements EaterDocs {
         return BaseResponse.of(null, HttpStatus.NO_CONTENT.value());
     }
 
+    @GetMapping("/server-time")
+    public String getServerTime() {
+        return LocalDateTime.now().toString();
+    }
 
 }

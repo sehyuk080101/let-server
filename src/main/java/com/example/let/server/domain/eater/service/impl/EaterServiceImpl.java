@@ -14,7 +14,6 @@ import com.example.let.server.domain.user.domain.User;
 import com.example.let.server.domain.user.service.UserService;
 import com.example.let.server.global.error.CustomException;
 import com.example.let.server.global.security.holder.SecurityHolder;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,6 @@ public class EaterServiceImpl implements EaterService {
     private final SecurityHolder securityHolder;
 
     @Scheduled(cron = "0 0 0,10,15 * * *")
-    @PostConstruct
     public void insertEater(){
         try {
             Meal meal = getCurrentMeal();
